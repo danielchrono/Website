@@ -538,7 +538,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
               <div class="grid md:grid-cols-2 gap-6 mb-8">
                 ${[
                   { icon: 'envelope', type: 'Email', value: 'danielchrono@gmail.com', href: 'mailto:danielchrono@gmail.com' },
-                  { icon: 'whatsapp', type: 'Whatsapp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' }
+                  { icon: 'whatsapp', type: 'WhatsApp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' }
                 ].map(contact => `
                   <a href="${contact.href}" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
                     <div class="flex items-center space-x-6">
