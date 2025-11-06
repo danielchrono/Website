@@ -1,5 +1,3 @@
-import './style.css';
-
 // Types
 interface Skill {
   name: string;
@@ -91,6 +89,10 @@ const timeline: TimelineItem[] = [
 class PortfolioApp {
   private mobileMenuOpen = false;
   private observer: IntersectionObserver | null = null;
+  
+  // NOVAS PROPRIEDADES DE CLASSE PARA ELEMENTOS DO MENU
+  private mobileMenuBtn: HTMLElement | null = null;
+  private mobileMenu: HTMLElement | null = null;
 
   constructor() {
     this.init();
@@ -98,17 +100,21 @@ class PortfolioApp {
 
   private init(): void {
     this.render();
+    
+    // CAPTURA OS ELEMENTOS APÓS A RENDERIZAÇÃO
+    this.mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    this.mobileMenu = document.getElementById('mobile-menu');
+    
     this.setupEventListeners();
     this.setupAnimations();
   }
 
   private setupEventListeners(): void {
     // Mobile menu
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
+    // A variável mobileMenu já foi movida para this.mobileMenu
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    mobileMenuBtn?.addEventListener('click', (e) => {
+    this.mobileMenuBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleMobileMenu();
     });
@@ -123,6 +129,7 @@ class PortfolioApp {
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       if (this.mobileMenuOpen && 
+          // Usa as propriedades de classe
           !target.closest('#mobile-menu') && 
           !target.closest('#mobile-menu-btn')) {
         this.closeMobileMenu();
@@ -149,23 +156,59 @@ class PortfolioApp {
       });
     });
 
-    // Map toggle
+    // Map toggle (Com rolagem e correção de centralização)
     const mapToggle = document.getElementById('map-toggle');
     const mapContainer = document.getElementById('map-container');
+    const header = document.getElementById('site-header');
     const mapIcon = document.getElementById('map-icon');
     const mapText = document.getElementById('map-text');
+    const contactSection = document.getElementById('contato');
 
-    mapToggle?.addEventListener('click', () => {
+    mapToggle?.addEventListener('click', (e) => {
+      e.preventDefault();
+      
       const isHidden = mapContainer?.classList.contains('hidden');
       mapContainer?.classList.toggle('hidden', !isHidden);
       
       if (mapIcon && mapText) {
         if (isHidden) {
+          // MODO: MAPA ABERTO
           mapIcon.innerHTML = '<i class="fas fa-times"></i>';
           mapText.textContent = 'Ocultar Mapa';
+          
+          // SCROLL PARA O BOTÃO APÓS ABRIR O MAPA
+          if (header && contactSection && mapToggle) {
+            const headerHeight = header.offsetHeight;
+            const offsetMargin = 30;
+            
+            setTimeout(() => {
+                const linkTopPosition = mapToggle.getBoundingClientRect().top + window.scrollY;
+                const adjustedPosition = linkTopPosition - headerHeight - offsetMargin;
+                
+                window.scrollTo({
+                    top: adjustedPosition,
+                    behavior: "smooth"
+                });
+            }, 500); 
+          }
+
         } else {
+          // MODO: MAPA FECHADO
           mapIcon.innerHTML = '<i class="fas fa-map-marker-alt"></i>';
           mapText.textContent = 'Ver Localização';
+          
+          // SCROLL PARA O TOPO DA SEÇÃO CONTATO APÓS FECHAR O MAPA
+          if (header && contactSection) {
+             const headerHeight = header.offsetHeight;
+             setTimeout(() => {
+                const targetTop = contactSection.getBoundingClientRect().top + window.scrollY - headerHeight - 10;
+                
+                window.scrollTo({
+                    top: targetTop,
+                    behavior: "smooth"
+                });
+            }, 500);
+          }
         }
       }
     });
@@ -184,7 +227,7 @@ class PortfolioApp {
           }
           
           // Animate skill bars
-          if (entry.target.classList.contains('skill-bar')) {
+          if (entry.target.classList.contains('skill-bar-progress')) {
             this.animateSkillBar(entry.target as HTMLElement);
           }
         }
@@ -205,14 +248,15 @@ class PortfolioApp {
     });
 
     // Observe skill bars
-    document.querySelectorAll('.skill-bar').forEach(bar => {
+    document.querySelectorAll('.skill-bar-progress').forEach(bar => {
       this.observer?.observe(bar);
     });
   }
 
   private toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
-    const mobileMenu = document.getElementById('mobile-menu');
+    // Usa a propriedade de classe
+    const mobileMenu = this.mobileMenu;
     const body = document.body;
 
     if (this.mobileMenuOpen) {
@@ -226,7 +270,8 @@ class PortfolioApp {
 
   private closeMobileMenu(): void {
     this.mobileMenuOpen = false;
-    const mobileMenu = document.getElementById('mobile-menu');
+    // Usa a propriedade de classe
+    const mobileMenu = this.mobileMenu;
     const body = document.body;
 
     mobileMenu?.classList.add('hidden');
@@ -252,7 +297,8 @@ class PortfolioApp {
   }
 
   private animateSkillBar(element: HTMLElement): void {
-    const percentage = element.getAttribute('data-percentage');
+    const parent = element.closest('.skill-bar');
+    const percentage = parent?.getAttribute('data-percentage');
     if (percentage) {
       setTimeout(() => {
         element.style.width = `${percentage}%`;
@@ -267,10 +313,9 @@ class PortfolioApp {
           <span class="text-lightestSlate font-medium">${skill.name}</span>
           <span class="text-brand font-semibold">${skill.percentage}%</span>
         </div>
-        <div class="w-full bg-navy rounded-full h-3 overflow-hidden">
-          <div class="skill-bar bg-brand h-3 rounded-full transition-all duration-1000 ease-out" 
-               data-percentage="${skill.percentage}"
-               style="width: 0%"></div>
+        <div class="w-full bg-navy rounded-full h-3 overflow-hidden" data-percentage="${skill.percentage}">
+          <div class="skill-bar-progress bg-brand h-3 rounded-full transition-all duration-1000 ease-out" 
+              style="width: 0%"></div>
         </div>
       </div>
     `;
@@ -283,7 +328,7 @@ class PortfolioApp {
           <i class="far fa-folder text-brand text-3xl"></i>
           <div class="flex space-x-4">
             ${project.githubUrl ? `
-              <a href="${project.githubUrl}" class="text-slate hover:text-brand transition-colors duration-300 text-lg">
+              <a href="${project.githubUrl}" target="_blank" class="text-slate hover:text-brand transition-colors duration-300 text-lg">
                 <i class="fab fa-github"></i>
               </a>
             ` : ''}
@@ -295,7 +340,7 @@ class PortfolioApp {
     `;
   }
 
-private renderTimelineItem(item: TimelineItem, index: number): string {
+  private renderTimelineItem(item: TimelineItem, index: number): string {
     const isEven = index % 2 === 0;
     
     // Classes para alinhamento do conteúdo no desktop
@@ -306,6 +351,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
     return `
         <div class="relative w-full mb-12 flex items-center ${desktopAlignmentClass}">
             
+            <!-- Desktop/Tablet Version (Duas Colunas) -->
             <div class="hidden md:flex w-full ${isEven ? 'flex-row' : 'flex-row-reverse'} items-center">
                 <div class="w-1/2 ${desktopPaddingClass}">
                     <div class="bg-lightNavy rounded-xl p-8 border border-gray-800 shadow-xl hover:shadow-2xl transition-all duration-500 hover:border-brand/50 ${desktopTextAlignmentClass}">
@@ -316,13 +362,17 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
                     </div>
                 </div>
                 
+                <!-- Bolha Central - Desktop Only -->
                 <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-brand rounded-full border-4 border-lightNavy z-20 shadow-xl"></div>
             </div>
             
+            <!-- Mobile Version (Uma Coluna) -->
             <div class="md:hidden flex w-full relative">
                 
+                <!-- Mobile Bolha: Corrigido com left-[33px] para centralização pixel-perfeita -->
                 <div class="absolute left-[33px] top-4 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-20 transform -translate-x-1/2 shadow-lg"></div>
 
+                <!-- O Conteúdo move para a direita para dar espaço à linha/bolha -->
                 <div class="flex-grow ml-16">
                     <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 mb-4">
                         <div class="text-brand font-bold text-base mb-2">${item.date}</div>
@@ -334,7 +384,11 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
             </div>
         </div>
     `;
-}
+  }
+
+  private capitalizeFirstLetter(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
   private render(): void {
     const app = document.getElementById('app');
@@ -342,7 +396,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
 
     app.innerHTML = `
       <!-- Header -->
-      <header class="fixed top-0 w-full bg-navy/95 backdrop-blur-md z-50 border-b border-gray-800/50">
+      <header id="site-header" class="fixed top-0 w-full bg-navy/95 backdrop-blur-md z-50 border-b border-gray-800/50">
         <div class="container mx-auto px-6 py-4">
           <div class="flex justify-between items-center">
             <a href="#inicio" class="text-2xl font-bold text-lightestSlate hover:text-brand transition-colors duration-300">
@@ -376,8 +430,8 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 z-40 pt-24">          
-        <div class="container mx-auto px-6 bg-gradient-to-b from-navy to-lightNavy rounded-lg shadow-2xl border border-gray-800/50">
+        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 z-40 pt-24 bg-navy/95 backdrop-blur-sm">          
+          <div class="container mx-auto px-6 rounded-lg shadow-2xl border border-gray-800/50">
             <nav class="flex flex-col space-y-2">
               ${[
                 { name: 'sobre', icon: 'user' },
@@ -460,6 +514,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
               <div class="flex justify-center">
                 <div class="relative group">
                   <div class="w-72 h-72 rounded-full border-4 border-brand overflow-hidden shadow-2xl group-hover:shadow-brand/30 transition-all duration-500">
+                    <!-- CORREÇÃO: Usando caminho relativo para assets -->
                     <img src="./assets/profile-img.jpg" alt="Daniel Lopes - Engenheiro de Software" 
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                          onerror="this.style.display='none'">
@@ -472,7 +527,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
         </section>
 
         <!-- Skills Section -->
-        <section id="habilidades" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-lightNavy">
+        <section id="habilidades" class="section min-h-screen-dvh flex items-start justify-center py-20 bg-lightNavy">
           <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-16 flex items-center">
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">02.</span> Habilidades
@@ -533,10 +588,12 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">04.</span> Histórico Profissional e Acadêmico
             </h2>
             
-            <div class="relative">
-              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-brand transform -translate-x-1/2 z-0"></div>
+            <div class="relative max-w-4xl mx-auto">
+              <!-- LINHA CENTRAL - DESKTOP ONLY -->
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-brand transform -translate-x-1/2 z-0"></div>
               
-              <div class="md:hidden absolute left-8 top-0 bottom-0 w-0.5 bg-brand z-0"></div>
+              <!-- LINHA LATERAL - MOBILE ONLY -->
+              <div class="md:hidden absolute left-8 top-0 bottom-0 w-px bg-brand z-0"></div>
               
               <div class="space-y-4">
                 ${timeline.map((item, index) => this.renderTimelineItem(item, index)).join('')}
@@ -546,7 +603,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
         </section>
 
         <!-- Contact Section -->
-        <section id="contato" class="section min-h-screen flex items-center py-20 bg-navy">
+        <section id="contato" class="section min-h-screen flex items-start py-20 bg-navy">
           <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-4 text-center">
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">05.</span> Contato
@@ -562,7 +619,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
                   { icon: 'fas fa-envelope', type: 'Email', value: 'danielchrono@gmail.com', href: 'mailto:danielchrono@gmail.com' },
                   { icon: 'fab fa-whatsapp', type: 'WhatsApp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' }
                 ].map(contact => `
-                  <a href="${contact.href}" class="bg-lightNavy rounded-lg p-4 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-800 hover:border-brand/40 group shadow-md hover:shadow-lg">
+                  <a href="${contact.href}" target="_blank" class="bg-lightNavy rounded-lg p-4 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-800 hover:border-brand/40 group shadow-md hover:shadow-lg">
                     <div class="flex items-center space-x-4">
                       <div class="w-10 h-10 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
                         <i class="${contact.icon} text-brand text-lg"></i>
@@ -575,7 +632,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
                   </a>
                 `).join('')}
               </div>
-                            
+                
               <!-- Social Grid -->
               <div class="grid md:grid-cols-2 gap-4 mb-8">
                 ${[
@@ -627,18 +684,9 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
       </footer>
     `;
   }
-
-  private capitalizeFirstLetter(string: string): string {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
 }
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   new PortfolioApp();
-});
-
-// Handle errors
-window.addEventListener('error', (event) => {
-  console.error('Application error:', event.error);
 });
