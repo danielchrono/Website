@@ -361,10 +361,17 @@ class PortfolioApp {
         <div id="mobile-menu" class="md:hidden hidden fixed inset-0 bg-navy/98 backdrop-blur-lg z-40 pt-24">
           <div class="container mx-auto px-6">
             <nav class="flex flex-col space-y-2">
-              ${['sobre', 'habilidades', 'projetos', 'historico', 'contato'].map((item, index) => `
-                <a href="#${item}" class="mobile-link text-lightestSlate hover:text-brand text-2xl font-semibold flex items-center space-x-4 py-4 px-6 rounded-lg hover:bg-lightNavy/50 transition-all duration-300 group">
+              ${[
+                { name: 'sobre', icon: 'user' },
+                { name: 'habilidades', icon: 'tools' },
+                { name: 'projetos', icon: 'laptop-code' },
+                { name: 'historico', icon: 'history' },
+                { name: 'contato', icon: 'envelope' }
+              ].map((item, index) => `
+                <a href="#${item.name}" class="mobile-link text-lightestSlate hover:text-brand text-2xl font-semibold flex items-center space-x-4 py-4 px-6 rounded-lg hover:bg-lightNavy/50 transition-all duration-300 group">
                   <span class="text-brand text-sm font-mono">0${index + 1}.</span>
-                  <span class="group-hover:translate-x-2 transition-transform duration-300">${this.capitalizeFirstLetter(item)}</span>
+                  <i class="fas fa-${item.icon} text-brand text-lg"></i>
+                  <span class="group-hover:translate-x-2 transition-transform duration-300">${this.capitalizeFirstLetter(item.name)}</span>
                 </a>
               `).join('')}
             </nav>
