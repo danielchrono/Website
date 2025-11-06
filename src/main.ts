@@ -542,8 +542,8 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
             <div class="max-w-4xl mx-auto">
               <div class="grid md:grid-cols-2 gap-6 mb-8">
                 ${[
-                  { icon: 'envelope', type: 'Email', value: 'danielchrono@gmail.com', href: 'mailto:danielchrono@gmail.com' },
-                  { icon: 'whatsapp', type: 'WhatsApp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' }
+                  { icon: 'fas fa-envelope', type: 'Email', value: 'danielchrono@gmail.com', href: 'mailto:danielchrono@gmail.com' },
+                  { icon: 'fab fa-whatsapp', type: 'WhatsApp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' },
                 ].map(contact => `
                   <a href="${contact.href}" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
                     <div class="flex items-center space-x-6">
@@ -561,8 +561,8 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
               
               <div class="grid md:grid-cols-2 gap-6 mb-12">
                 ${[
-                  { icon: 'linkedin-in', type: 'LinkedIn', value: 'Meu Perfil Profissional', href: 'https://linkedin.com/in/danieldepaulaglopes' },
-                  { icon: 'github', type: 'GitHub', value: 'Meus Repositórios', href: 'https://github.com/danielchrono' }
+                  { icon: 'fab fa-linkedin-in', type: 'LinkedIn', value: 'Meu Perfil Profissional', href: 'https://linkedin.com/in/danieldepaulaglopes' },
+                  { icon: 'fab fa-github', type: 'GitHub', value: 'Meus Repositórios', href: 'https://github.com/danielchrono' }
                 ].map(social => `
                   <a href="${social.href}" target="_blank" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
                     <div class="flex items-center space-x-6">
