@@ -296,25 +296,30 @@ class PortfolioApp {
   }
 
 private renderTimelineItem(item: TimelineItem, index: number): string {
+  const isEven = index % 2 === 0;
+  const isLast = index === timeline.length - 1;
+  
   return `
-    <div class="relative flex w-full mb-8">
-      <!-- Linha vertical -->
-      ${index < timeline.length - 1 ? `
-        <div class="hidden md:block absolute left-1/2 top-14 transform -translate-x-1/2 w-0.5 h-full bg-brand z-0"></div>
-      ` : ''}
-      
-      <!-- Ponto na linha -->
-      <div class="hidden md:block absolute left-1/2 top-6 transform -translate-x-1/2 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-10"></div>
+    <div class="relative flex w-full mb-1">
+      <!-- Linha vertical - Desktop -->
+      <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-brand transform -translate-x-1/2 z-0"></div>
       
       <!-- Content -->
-      <div class="w-full md:w-5/12 ${index % 2 === 0 ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}">
-        <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300">
+      <div class="w-full md:w-5/12 ${isEven ? 'md:pr-16' : 'md:pl-16 md:ml-auto'}">
+        <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-brand/30 mb-8">
           <div class="text-brand font-bold text-sm mb-2">${item.date}</div>
           <h3 class="text-lightestSlate font-bold text-lg mb-1">${item.title}</h3>
           <p class="text-brand text-sm font-semibold mb-3">${item.subtitle}</p>
           <p class="text-slate text-sm leading-relaxed">${item.description}</p>
         </div>
       </div>
+      
+      <!-- Ponto centralizado - Desktop -->
+      <div class="hidden md:flex absolute left-1/2 top-6 transform -translate-x-1/2 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-10 shadow-lg"></div>
+      
+      <!-- Linha e ponto - Mobile -->
+      <div class="md:hidden absolute left-6 top-0 bottom-0 w-0.5 bg-brand z-0"></div>
+      <div class="md:hidden absolute left-5 top-6 w-3 h-3 bg-brand rounded-full border-2 border-lightNavy z-10"></div>
     </div>
   `;
 }
