@@ -232,7 +232,7 @@ class PortfolioApp {
             
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8">
-              ${['Sobre', 'Habilidades', 'Projetos', 'Histórico', 'Contato'].map(item => `
+              ${['Sobre', 'Habilidades', 'Projetos', 'Historico', 'Contato'].map(item => `
                 <a href="#${item.toLowerCase()}" class="text-lightestSlate hover:text-brand transition-colors text-sm font-medium flex items-center space-x-1">
                   <i class="fas fa-${this.getNavIcon(item)} text-xs"></i>
                   <span>${item}</span>
@@ -253,7 +253,7 @@ class PortfolioApp {
         <div id="mobile-menu" class="md:hidden hidden fixed inset-0 bg-navy/95 backdrop-blur-md z-40 pt-20">
           <div class="container mx-auto px-6">
             <nav class="flex flex-col space-y-6">
-              ${['Sobre', 'Habilidades', 'Projetos', 'Histórico', 'Contato'].map(item => `
+              ${['Sobre', 'Habilidades', 'Projetos', 'Historico', 'Contato'].map(item => `
                 <a href="#${item.toLowerCase()}" class="mobile-link text-lightestSlate hover:text-brand text-xl font-medium flex items-center space-x-3 py-3 border-b border-gray-800">
                   <i class="fas fa-${this.getNavIcon(item)} text-brand"></i>
                   <span>${item}</span>
@@ -487,7 +487,7 @@ class PortfolioApp {
       'Sobre': 'user',
       'Habilidades': 'tools',
       'Projetos': 'laptop-code',
-      'Histórico': 'history',
+      'Historico': 'history',
       'Contato': 'envelope'
     };
     return icons[item] || 'circle';
