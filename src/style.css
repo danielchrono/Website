@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .section {
+    @apply opacity-0 transform translate-y-8 transition-all duration-700;
+  }
+  
+  .section.animate-fade-in {
+    @apply opacity-100 translate-y-0;
+  }
+  
+  .skill-progress {
+    width: 0%;
+    transition: width 1.5s ease-in-out;
+  }
+  
+  /* Timeline mobile styles */
+  @media (max-width: 768px) {
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      background: theme('colors.brand');
+    }
+    
+    .timeline-item:first-child::before {
+      height: calc(100% - 1rem);
+      top: 1rem;
+    }
+    
+    .timeline-item:last-child::before {
+      height: 1rem;
+    }
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.navy');
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.brand');
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.brand');
+  opacity: 0.8;
+}
