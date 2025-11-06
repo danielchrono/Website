@@ -8,11 +8,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "fix": "^0.0.6",
+    "tailwind": "^2.3.1",
     "typescript": "^5.0.8"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.0",
+    "postcss": "^8.5.6",
     "tailwindcss": "^3.4.0",
     "terser": "^5.44.1",
     "vite": "^7.2.1"
