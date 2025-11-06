@@ -63,22 +63,59 @@
 }
 
 /* Timeline improvements */
-.timeline-item:nth-child(odd) {
-  justify-content: flex-start;
+.timeline-item {
+  position: relative;
 }
 
-.timeline-item:nth-child(even) {
-  justify-content: flex-end;
+/* Desktop timeline */
+@media (min-width: 768px) {
+  .timeline-item:nth-child(odd) .timeline-content {
+    text-align: right;
+  }
+  
+  .timeline-item:nth-child(even) .timeline-content {
+    text-align: left;
+  }
 }
 
 /* Mobile timeline */
-@media (max-width: 768px) {
-  .timeline-line {
-    left: 20px !important;
+@media (max-width: 767px) {
+  .timeline-content {
+    margin-left: 3rem !important;
+    text-align: left !important;
   }
   
-  .timeline-dot {
-    left: 16px !important;
+  .timeline-line-mobile {
+    left: 1.5rem !important;
+  }
+  
+  .timeline-dot-mobile {
+    left: 1.25rem !important;
+  }
+}
+
+/* Map container transitions */
+.map-container {
+  transition: all 0.3s ease-in-out;
+}
+
+.map-container.hidden {
+  display: none;
+}
+
+.map-container:not(.hidden) {
+  display: block;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
