@@ -300,26 +300,41 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
   const isLast = index === timeline.length - 1;
   
   return `
-    <div class="relative flex w-full mb-1">
-      <!-- Linha vertical - Desktop -->
-      <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-brand transform -translate-x-1/2 z-0"></div>
-      
-      <!-- Content -->
-      <div class="w-full md:w-5/12 ${isEven ? 'md:pr-16' : 'md:pl-16 md:ml-auto'}">
-        <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-brand/30 mb-8">
-          <div class="text-brand font-bold text-sm mb-2">${item.date}</div>
-          <h3 class="text-lightestSlate font-bold text-lg mb-1">${item.title}</h3>
-          <p class="text-brand text-sm font-semibold mb-3">${item.subtitle}</p>
-          <p class="text-slate text-sm leading-relaxed">${item.description}</p>
+    <div class="relative w-full mb-8">
+      <!-- Desktop Version -->
+      <div class="hidden md:flex w-full ${isEven ? 'justify-start' : 'justify-end'}">
+        <div class="w-full max-w-2xl ${isEven ? 'pr-12' : 'pl-12'}">
+          <div class="bg-lightNavy rounded-xl p-8 border border-gray-800 shadow-xl hover:shadow-2xl transition-all duration-500 hover:border-brand/50">
+            <div class="text-brand font-bold text-lg mb-3">${item.date}</div>
+            <h3 class="text-lightestSlate font-bold text-2xl mb-2">${item.title}</h3>
+            <p class="text-brand text-lg font-semibold mb-4">${item.subtitle}</p>
+            <p class="text-slate text-base leading-relaxed">${item.description}</p>
+          </div>
         </div>
       </div>
       
-      <!-- Ponto centralizado - Desktop -->
-      <div class="hidden md:flex absolute left-1/2 top-6 transform -translate-x-1/2 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-10 shadow-lg"></div>
+      <!-- Mobile Version -->
+      <div class="md:hidden flex w-full">
+        <!-- Timeline line and dot -->
+        <div class="flex-shrink-0 w-16 relative">
+          <div class="absolute left-8 top-0 bottom-0 w-1 bg-brand"></div>
+          <div class="absolute left-6 top-8 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-10 shadow-lg"></div>
+          ${isLast ? '' : '<div class="absolute left-8 top-12 w-1 h-full bg-brand"></div>'}
+        </div>
+        
+        <!-- Content -->
+        <div class="flex-grow ml-4">
+          <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 mb-4">
+            <div class="text-brand font-bold text-base mb-2">${item.date}</div>
+            <h3 class="text-lightestSlate font-bold text-xl mb-2">${item.title}</h3>
+            <p class="text-brand text-base font-semibold mb-3">${item.subtitle}</p>
+            <p class="text-slate text-sm leading-relaxed">${item.description}</p>
+          </div>
+        </div>
+      </div>
       
-      <!-- Linha e ponto - Mobile -->
-      <div class="md:hidden absolute left-6 top-0 bottom-0 w-0.5 bg-brand z-0"></div>
-      <div class="md:hidden absolute left-5 top-6 w-3 h-3 bg-brand rounded-full border-2 border-lightNavy z-10"></div>
+      <!-- Central Dot - Desktop Only -->
+      <div class="hidden md:flex absolute left-1/2 top-10 transform -translate-x-1/2 w-6 h-6 bg-brand rounded-full border-4 border-lightNavy z-20 shadow-2xl"></div>
     </div>
   `;
 }
@@ -530,66 +545,68 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
         </section>
 
         <!-- Contact Section -->
-        <section id="contato" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-navy">
+        <section id="contato" class="section min-h-screen flex items-center py-20 bg-navy">
           <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-4 text-center">
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">05.</span> Contato
             </h2>
-            <p class="text-slate text-xl text-center mb-16 max-w-2xl mx-auto">
-              Aberto a oportunidades e colaborações. Vamos conversar sobre como posso agregar valor ao seu projeto.
+            <p class="text-slate text-lg text-center mb-12 max-w-2xl mx-auto">
+              Aberto a oportunidades e colaborações.
             </p>
             
             <div class="max-w-4xl mx-auto">
-              <div class="grid md:grid-cols-2 gap-6 mb-8">
+              <!-- Contact Grid -->
+              <div class="grid md:grid-cols-2 gap-4 mb-6">
                 ${[
                   { icon: 'fas fa-envelope', type: 'Email', value: 'danielchrono@gmail.com', href: 'mailto:danielchrono@gmail.com' },
-                  { icon: 'fab fa-whatsapp', type: 'WhatsApp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' },
+                  { icon: 'fab fa-whatsapp', type: 'WhatsApp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' }
                 ].map(contact => `
-                  <a href="${contact.href}" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
-                    <div class="flex items-center space-x-6">
-                      <div class="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
-                        <i class="${contact.icon.startsWith('fab') ? 'fab' : 'fas'} fa-${contact.icon.replace('fab-', '')} text-brand text-2xl group-hover:scale-110 transition-transform duration-300"></i>
+                  <a href="${contact.href}" class="bg-lightNavy rounded-lg p-4 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-800 hover:border-brand/40 group shadow-md hover:shadow-lg">
+                    <div class="flex items-center space-x-4">
+                      <div class="w-10 h-10 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
+                        <i class="${contact.icon} text-brand text-lg"></i>
                       </div>
-                      <div>
-                        <h4 class="text-lightestSlate font-bold text-lg mb-1">${contact.type}</h4>
-                        <span class="text-slate group-hover:text-lightestSlate transition-colors duration-300">${contact.value}</span>
+                      <div class="flex-1 min-w-0">
+                        <h4 class="text-lightestSlate font-semibold text-sm mb-1 truncate">${contact.type}</h4>
+                        <span class="text-slate text-xs group-hover:text-lightestSlate transition-colors duration-300 truncate">${contact.value}</span>
                       </div>
                     </div>
                   </a>
                 `).join('')}
               </div>
-              
-              <div class="grid md:grid-cols-2 gap-6 mb-12">
+                            
+              <!-- Social Grid -->
+              <div class="grid md:grid-cols-2 gap-4 mb-8">
                 ${[
-                  { icon: 'fab fa-linkedin-in', type: 'LinkedIn', value: 'Meu Perfil Profissional', href: 'https://linkedin.com/in/danieldepaulaglopes' },
+                  { icon: 'fab fa-linkedin-in', type: 'LinkedIn', value: 'Meu Perfil', href: 'https://linkedin.com/in/danieldepaulaglopes' },
                   { icon: 'fab fa-github', type: 'GitHub', value: 'Meus Repositórios', href: 'https://github.com/danielchrono' }
                 ].map(social => `
-                  <a href="${social.href}" target="_blank" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
-                    <div class="flex items-center space-x-6">
-                      <div class="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
-                        <i class="fab fa-${social.icon} text-brand text-2xl group-hover:scale-110 transition-transform duration-300"></i>
+                  <a href="${social.href}" target="_blank" class="bg-lightNavy rounded-lg p-4 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-800 hover:border-brand/40 group shadow-md hover:shadow-lg">
+                    <div class="flex items-center space-x-4">
+                      <div class="w-10 h-10 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
+                        <i class="${social.icon} text-brand text-lg"></i>
                       </div>
-                      <div>
-                        <h4 class="text-lightestSlate font-bold text-lg mb-1">${social.type}</h4>
-                        <span class="text-slate group-hover:text-lightestSlate transition-colors duration-300">${social.value}</span>
+                      <div class="flex-1 min-w-0">
+                        <h4 class="text-lightestSlate font-semibold text-sm mb-1 truncate">${social.type}</h4>
+                        <span class="text-slate text-xs group-hover:text-lightestSlate transition-colors duration-300 truncate">${social.value}</span>
                       </div>
                     </div>
                   </a>
                 `).join('')}
               </div>
-              
-              <div class="text-center">
-                <button id="map-toggle" class="border-2 border-brand text-brand px-10 py-4 rounded-lg font-bold hover:bg-brand hover:text-navy transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center space-x-3 mx-auto">
+            
+              <div class="text-center mt-12">
+                <button id="map-toggle" class="border-2 border-brand text-brand px-8 py-3 rounded-lg font-semibold hover:bg-brand hover:text-navy transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center space-x-3 mx-auto">
                   <span id="map-icon"><i class="fas fa-map-marker-alt"></i></span>
                   <span id="map-text">Ver Localização</span>
                 </button>
               </div>
               
-              <div id="map-container" class="mt-12 rounded-2xl overflow-hidden hidden shadow-2xl">
+              <div id="map-container" class="mt-8 rounded-xl overflow-hidden hidden shadow-2xl">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1875.8859037057657!2d-43.97271126167558!3d-19.891855295371986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa690cfec386847%3A0x70914e1de91c238c!2sRua%20%C3%81lvaro%20Alvim%2C%202265%20-%20Vila%20Amaral%2C%20Belo%20Horizonte%20-%20MG%2C%2030775-190!5e0!3m2!1spt-BR!2sbr!4v1762386692291!5m2!1spt-BR!2sbr"
                   width="100%"
-                  height="400"
+                  height="300"
                   style="border:0;"
                   allowfullscreen=""
                   loading="lazy"

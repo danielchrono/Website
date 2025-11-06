@@ -63,6 +63,46 @@
 }
 
 /* Timeline improvements */
+.timeline-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Map container animations */
+#map-container {
+  transition: all 0.3s ease-in-out;
+  max-height: 0;
+  overflow: hidden;
+}
+
+#map-container:not(.hidden) {
+  max-height: 500px;
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+/* Contact section spacing */
+#contato {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+/* Ensure proper spacing */
+.section {
+  scroll-margin-top: 80px;
+}
+
 .timeline-item {
   position: relative;
 }
