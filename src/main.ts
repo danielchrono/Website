@@ -296,28 +296,24 @@ class PortfolioApp {
   }
 
 private renderTimelineItem(item: TimelineItem, index: number): string {
-  const isEven = index % 2 === 0;
   return `
-    <div class="relative flex w-full mb-8 md:mb-16">
-      <!-- Linha do tempo -->
-      <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-brand z-0">
-        <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-brand rounded-full"></div>
-        ${index === timeline.length - 1 ? `
-          <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-brand rounded-full"></div>
-        ` : ''}
-      </div>
+    <div class="relative flex w-full mb-8">
+      <!-- Linha vertical -->
+      ${index < timeline.length - 1 ? `
+        <div class="hidden md:block absolute left-1/2 top-14 transform -translate-x-1/2 w-0.5 h-full bg-brand z-0"></div>
+      ` : ''}
+      
+      <!-- Ponto na linha -->
+      <div class="hidden md:block absolute left-1/2 top-6 transform -translate-x-1/2 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-10"></div>
       
       <!-- Content -->
-      <div class="w-full md:w-1/2 ${isEven ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'} z-10">
-        <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-brand/30">
+      <div class="w-full md:w-5/12 ${index % 2 === 0 ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}">
+        <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300">
           <div class="text-brand font-bold text-sm mb-2">${item.date}</div>
           <h3 class="text-lightestSlate font-bold text-lg mb-1">${item.title}</h3>
           <p class="text-brand text-sm font-semibold mb-3">${item.subtitle}</p>
           <p class="text-slate text-sm leading-relaxed">${item.description}</p>
         </div>
-        
-        <!-- Ponto na linha do tempo -->
-        <div class="hidden md:flex absolute top-6 ${isEven ? 'right-[-8px]' : 'left-[-8px]'} w-4 h-4 bg-brand rounded-full border-4 border-navy z-20"></div>
       </div>
     </div>
   `;

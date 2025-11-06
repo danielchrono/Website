@@ -61,3 +61,29 @@
     display: none !important;
   }
 }
+
+/* Timeline improvements */
+.timeline-item:nth-child(odd) {
+  justify-content: flex-start;
+}
+
+.timeline-item:nth-child(even) {
+  justify-content: flex-end;
+}
+
+/* Mobile timeline */
+@media (max-width: 768px) {
+  .timeline-line {
+    left: 20px !important;
+  }
+  
+  .timeline-dot {
+    left: 16px !important;
+  }
+}
+
+/* Ensure footer stays at bottom */
+.site-footer {
+  position: relative;
+  z-index: 30;
+}
