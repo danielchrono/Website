@@ -72,12 +72,25 @@ const timeline: TimelineItem[] = [
     title: 'DV3 Soluções Logísticas',
     subtitle: 'Coordenador / Supervisor Administrativo',
     description: 'Liderança na implantação da filial em BH/MG, reestruturação física do espaço logístico e criação de protocolos operacionais.'
+  },
+  {
+    date: '2016 - 2018',
+    title: 'Oliveira Silva Transportes',
+    subtitle: 'Gerente Comercial',
+    description: 'Gestão completa da operação em BH, administração de equipe de mais de 50 pessoas e expansão da carteira de clientes.'
+  },
+  {
+    date: '2009 - 2011',
+    title: 'ETFG (SEBRAE/MG)',
+    subtitle: 'Ensino Médio Integrado ao Técnico em Administração',
+    description: 'Formação com ênfase em gestão empresarial prática e desenvolvimento de visão sistêmica de negócios.'
   }
 ];
 
 // Components
 class PortfolioApp {
   private mobileMenuOpen = false;
+  private observer: IntersectionObserver | null = null;
 
   constructor() {
     this.init();
@@ -86,7 +99,7 @@ class PortfolioApp {
   private init(): void {
     this.render();
     this.setupEventListeners();
-    this.animateOnScroll();
+    this.setupAnimations();
   }
 
   private setupEventListeners(): void {
@@ -95,7 +108,8 @@ class PortfolioApp {
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenuBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
       this.toggleMobileMenu();
     });
 
@@ -105,13 +119,32 @@ class PortfolioApp {
       });
     });
 
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (this.mobileMenuOpen && 
+          !target.closest('#mobile-menu') && 
+          !target.closest('#mobile-menu-btn')) {
+        this.closeMobileMenu();
+      }
+    });
+
     // Smooth scroll for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = document.querySelector(anchor.getAttribute('href')!);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+        const href = anchor.getAttribute('href');
+        if (href && href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            const headerHeight = 80;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+          }
         }
       });
     });
@@ -119,15 +152,61 @@ class PortfolioApp {
     // Map toggle
     const mapToggle = document.getElementById('map-toggle');
     const mapContainer = document.getElementById('map-container');
+    const mapIcon = document.getElementById('map-icon');
+    const mapText = document.getElementById('map-text');
 
     mapToggle?.addEventListener('click', () => {
-      mapContainer?.classList.toggle('hidden');
-      const icon = mapToggle.querySelector('i');
-      if (icon) {
-        icon.className = mapContainer?.classList.contains('hidden') 
-          ? 'fas fa-map-marker-alt' 
-          : 'fas fa-times';
+      const isHidden = mapContainer?.classList.contains('hidden');
+      mapContainer?.classList.toggle('hidden', !isHidden);
+      
+      if (mapIcon && mapText) {
+        if (isHidden) {
+          mapIcon.innerHTML = '<i class="fas fa-times"></i>';
+          mapText.textContent = 'Ocultar Mapa';
+        } else {
+          mapIcon.innerHTML = '<i class="fas fa-map-marker-alt"></i>';
+          mapText.textContent = 'Ver Localização';
+        }
       }
+    });
+  }
+
+  private setupAnimations(): void {
+    // Intersection Observer for animations
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in');
+          
+          // Animate counters
+          if (entry.target.classList.contains('counter')) {
+            this.animateCounter(entry.target as HTMLElement);
+          }
+          
+          // Animate skill bars
+          if (entry.target.classList.contains('skill-bar')) {
+            this.animateSkillBar(entry.target as HTMLElement);
+          }
+        }
+      });
+    }, { 
+      threshold: 0.1,
+      rootMargin: '-50px 0px -50px 0px'
+    });
+
+    // Observe sections
+    document.querySelectorAll('.section').forEach(section => {
+      this.observer?.observe(section);
+    });
+
+    // Observe counters
+    document.querySelectorAll('.counter').forEach(counter => {
+      this.observer?.observe(counter);
+    });
+
+    // Observe skill bars
+    document.querySelectorAll('.skill-bar').forEach(bar => {
+      this.observer?.observe(bar);
     });
   }
 
@@ -154,30 +233,44 @@ class PortfolioApp {
     body.style.overflow = '';
   }
 
-  private animateOnScroll(): void {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in');
-        }
-      });
-    }, { threshold: 0.1 });
+  private animateCounter(element: HTMLElement): void {
+    const target = parseInt(element.getAttribute('data-count') || '0');
+    let current = 0;
+    const increment = target / 60;
+    const duration = 2000;
+    const stepTime = duration / 60;
 
-    document.querySelectorAll('.section').forEach(section => {
-      observer.observe(section);
-    });
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        element.textContent = target.toString();
+        clearInterval(timer);
+      } else {
+        element.textContent = Math.floor(current).toString();
+      }
+    }, stepTime);
+  }
+
+  private animateSkillBar(element: HTMLElement): void {
+    const percentage = element.getAttribute('data-percentage');
+    if (percentage) {
+      setTimeout(() => {
+        element.style.width = `${percentage}%`;
+      }, 300);
+    }
   }
 
   private renderSkillBar(skill: Skill): string {
     return `
-      <div class="skill-item mb-4">
-        <div class="flex justify-between text-sm mb-1">
+      <div class="skill-item mb-6">
+        <div class="flex justify-between text-sm mb-2">
           <span class="text-lightestSlate font-medium">${skill.name}</span>
-          <span class="text-brand">${skill.percentage}%</span>
+          <span class="text-brand font-semibold">${skill.percentage}%</span>
         </div>
-        <div class="w-full bg-lightNavy rounded-full h-2">
-          <div class="skill-progress bg-brand h-2 rounded-full transition-all duration-1000 ease-out" 
-               data-percentage="${skill.percentage}"></div>
+        <div class="w-full bg-navy rounded-full h-3 overflow-hidden">
+          <div class="skill-bar bg-brand h-3 rounded-full transition-all duration-1000 ease-out" 
+               data-percentage="${skill.percentage}"
+               style="width: 0%"></div>
         </div>
       </div>
     `;
@@ -185,19 +278,19 @@ class PortfolioApp {
 
   private renderProjectCard(project: Project): string {
     return `
-      <div class="bg-lightNavy rounded-lg p-6 hover:transform hover:-translate-y-2 transition-all duration-300 border border-gray-800 hover:border-brand/30">
-        <div class="flex justify-between items-start mb-4">
-          <i class="far fa-folder text-brand text-2xl"></i>
-          <div class="flex space-x-3">
+      <div class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 shadow-lg hover:shadow-2xl hover:shadow-brand/10">
+        <div class="flex justify-between items-start mb-6">
+          <i class="far fa-folder text-brand text-3xl"></i>
+          <div class="flex space-x-4">
             ${project.githubUrl ? `
-              <a href="${project.githubUrl}" class="text-slate hover:text-brand transition-colors">
+              <a href="${project.githubUrl}" class="text-slate hover:text-brand transition-colors duration-300 text-lg">
                 <i class="fab fa-github"></i>
               </a>
             ` : ''}
           </div>
         </div>
-        <h3 class="text-lightestSlate text-lg font-semibold mb-2">${project.title}</h3>
-        <p class="text-slate text-sm">${project.description}</p>
+        <h3 class="text-lightestSlate text-xl font-bold mb-4">${project.title}</h3>
+        <p class="text-slate leading-relaxed">${project.description}</p>
       </div>
     `;
   }
@@ -205,14 +298,22 @@ class PortfolioApp {
   private renderTimelineItem(item: TimelineItem, index: number): string {
     const isEven = index % 2 === 0;
     return `
-      <div class="timeline-item relative ${isEven ? 'md:text-right md:pr-8 md:left-0' : 'md:text-left md:pl-8 md:left-1/2'} 
-           w-full md:w-1/2 px-4 mb-8">
-        <div class="${isEven ? 'md:mr-8' : 'md:ml-8'}">
-          <div class="text-brand font-semibold text-sm mb-1">${item.date}</div>
-          <h3 class="text-lightestSlate font-semibold text-lg">${item.title}</h3>
-          <p class="text-brand text-sm mb-2">${item.subtitle}</p>
-          <p class="text-slate text-sm">${item.description}</p>
+      <div class="relative flex md:contents ${isEven ? 'flex-row-reverse' : ''}">
+        <div class="timeline-item ${isEven ? 'md:mr-auto md:pr-8 md:text-right' : 'md:ml-auto md:pl-8 md:text-left'} 
+             w-full md:w-1/2 px-4 mb-12">
+          <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div class="text-brand font-bold text-sm mb-2">${item.date}</div>
+            <h3 class="text-lightestSlate font-bold text-lg mb-1">${item.title}</h3>
+            <p class="text-brand text-sm font-semibold mb-3">${item.subtitle}</p>
+            <p class="text-slate text-sm leading-relaxed">${item.description}</p>
+          </div>
         </div>
+        ${index < timeline.length - 1 ? `
+          <div class="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 h-full">
+            <div class="w-1 bg-brand h-full"></div>
+            <div class="absolute w-4 h-4 bg-navy border-2 border-brand rounded-full"></div>
+          </div>
+        ` : ''}
       </div>
     `;
   }
@@ -223,40 +324,40 @@ class PortfolioApp {
 
     app.innerHTML = `
       <!-- Header -->
-      <header class="fixed top-0 w-full bg-navy/90 backdrop-blur-md z-50 border-b border-gray-800">
+      <header class="fixed top-0 w-full bg-navy/95 backdrop-blur-md z-50 border-b border-gray-800/50">
         <div class="container mx-auto px-6 py-4">
           <div class="flex justify-between items-center">
-            <a href="#inicio" class="text-2xl font-bold text-lightestSlate">
+            <a href="#inicio" class="text-2xl font-bold text-lightestSlate hover:text-brand transition-colors duration-300">
               <span class="text-brand">D</span>L
             </a>
             
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8">
-              ${['Sobre', 'Habilidades', 'Projetos', 'Historico', 'Contato'].map(item => `
-                <a href="#${item.toLowerCase()}" class="text-lightestSlate hover:text-brand transition-colors text-sm font-medium flex items-center space-x-1">
-                  <i class="fas fa-${this.getNavIcon(item)} text-xs"></i>
-                  <span>${item}</span>
+              ${['sobre', 'habilidades', 'projetos', 'historico', 'contato'].map((item, index) => `
+                <a href="#${item}" class="text-lightestSlate hover:text-brand transition-colors duration-300 text-sm font-medium flex items-center space-x-2 group">
+                  <span class="text-brand text-xs font-mono">0${index + 1}.</span>
+                  <span class="group-hover:translate-y-[-2px] transition-transform duration-300">${this.capitalizeFirstLetter(item)}</span>
                 </a>
               `).join('')}
             </nav>
 
             <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden flex flex-col space-y-1">
-              <span class="w-6 h-0.5 bg-brand"></span>
-              <span class="w-6 h-0.5 bg-brand"></span>
-              <span class="w-6 h-0.5 bg-brand"></span>
+            <button id="mobile-menu-btn" class="md:hidden flex flex-col space-y-1.5 p-2">
+              <span class="w-6 h-0.5 bg-brand transition-all duration-300 ${this.mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}"></span>
+              <span class="w-6 h-0.5 bg-brand transition-all duration-300 ${this.mobileMenuOpen ? 'opacity-0' : ''}"></span>
+              <span class="w-6 h-0.5 bg-brand transition-all duration-300 ${this.mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}"></span>
             </button>
           </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 bg-navy/95 backdrop-blur-md z-40 pt-20">
+        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 bg-navy/98 backdrop-blur-lg z-40 pt-24">
           <div class="container mx-auto px-6">
-            <nav class="flex flex-col space-y-6">
-              ${['Sobre', 'Habilidades', 'Projetos', 'Historico', 'Contato'].map(item => `
-                <a href="#${item.toLowerCase()}" class="mobile-link text-lightestSlate hover:text-brand text-xl font-medium flex items-center space-x-3 py-3 border-b border-gray-800">
-                  <i class="fas fa-${this.getNavIcon(item)} text-brand"></i>
-                  <span>${item}</span>
+            <nav class="flex flex-col space-y-2">
+              ${['sobre', 'habilidades', 'projetos', 'historico', 'contato'].map((item, index) => `
+                <a href="#${item}" class="mobile-link text-lightestSlate hover:text-brand text-2xl font-semibold flex items-center space-x-4 py-4 px-6 rounded-lg hover:bg-lightNavy/50 transition-all duration-300 group">
+                  <span class="text-brand text-sm font-mono">0${index + 1}.</span>
+                  <span class="group-hover:translate-x-2 transition-transform duration-300">${this.capitalizeFirstLetter(item)}</span>
                 </a>
               `).join('')}
             </nav>
@@ -264,24 +365,28 @@ class PortfolioApp {
         </div>
       </header>
 
-      <main>
+      <main class="relative">
         <!-- Hero Section -->
-        <section id="inicio" class="min-h-screen flex items-center justify-center pt-16">
+        <section id="inicio" class="min-h-screen-dvh flex items-center justify-center pt-20 bg-navy">
           <div class="container mx-auto px-6">
-            <div class="max-w-3xl">
-              <p class="text-brand text-lg mb-4">Olá, meu nome é</p>
-              <h1 class="text-5xl md:text-7xl font-bold text-lightestSlate mb-4">Daniel Lopes.</h1>
-              <h2 class="text-2xl md:text-4xl text-slate mb-6">Construindo pontes entre logística e tecnologia.</h2>
-              <p class="text-slate text-lg mb-8 max-w-2xl">
+            <div class="max-w-4xl">
+              <p class="text-brand text-lg md:text-xl mb-4 animate-fade-in">Olá, meu nome é</p>
+              <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-lightestSlate mb-6 animate-fade-in" style="animation-delay: 0.1s">
+                Daniel Lopes.
+              </h1>
+              <h2 class="text-2xl md:text-3xl lg:text-4xl text-slate mb-8 animate-fade-in" style="animation-delay: 0.2s">
+                Construindo pontes entre logística e tecnologia.
+              </h2>
+              <p class="text-slate text-lg md:text-xl mb-12 max-w-3xl leading-relaxed animate-fade-in" style="animation-delay: 0.3s">
                 Profissional em transição da logística para a tecnologia, com mais de 
-                <strong class="text-lightestSlate">10 anos de experiência</strong> em gestão e implantação de processos. 
+                <strong class="text-lightestSlate font-semibold">10 anos de experiência</strong> em gestão e implantação de processos. 
                 Atualmente curso Engenharia da Computação com foco em segurança da informação.
               </p>
-              <div class="flex flex-wrap gap-4">
-                <a href="#contato" class="bg-brand text-navy px-6 py-3 rounded font-semibold hover:bg-transparent hover:text-brand border-2 border-brand transition-all duration-300">
-                  Entre em Contato <i class="fas fa-arrow-right ml-2"></i>
+              <div class="flex flex-wrap gap-4 animate-fade-in" style="animation-delay: 0.4s">
+                <a href="#contato" class="bg-brand text-navy px-8 py-4 rounded-lg font-bold hover:bg-transparent hover:text-brand border-2 border-brand transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-brand/25">
+                  Entre em Contato <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
                 </a>
-                <a href="#projetos" class="border-2 border-brand text-brand px-6 py-3 rounded font-semibold hover:bg-brand hover:text-navy transition-all duration-300">
+                <a href="#projetos" class="border-2 border-brand text-brand px-8 py-4 rounded-lg font-bold hover:bg-brand hover:text-navy transition-all duration-300 transform hover:-translate-y-1">
                   Ver Projetos
                 </a>
               </div>
@@ -290,31 +395,31 @@ class PortfolioApp {
         </section>
 
         <!-- About Section -->
-        <section id="sobre" class="section py-20">
+        <section id="sobre" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-navy">
           <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-lightestSlate mb-12 flex items-center">
-              <span class="text-brand text-xl mr-3">01.</span> Sobre Mim
+            <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-16 flex items-center">
+              <span class="text-brand text-xl md:text-2xl mr-4 font-mono">01.</span> Sobre Mim
             </h2>
             
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <p class="text-slate mb-4">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+              <div class="space-y-6">
+                <p class="text-slate text-lg leading-relaxed">
                   Atuei em coordenação operacional, implantação de filiais e automação de processos. 
                   Hoje aplico minha experiência em gestão para criar soluções tecnológicas confiáveis.
                 </p>
-                <p class="text-slate mb-8">
+                <p class="text-slate text-lg leading-relaxed">
                   Cursando Engenharia da Computação, tenho interesse em redes, criptografia e segurança da informação.
                 </p>
                 
-                <div class="grid grid-cols-3 gap-6">
+                <div class="grid grid-cols-3 gap-8 pt-8">
                   ${[
                     { number: 10, label: 'Anos de Experiência' },
                     { number: 3, label: 'Filiais Implantadas' },
                     { number: 5, label: 'Projetos Concluídos' }
                   ].map(stat => `
                     <div class="text-center">
-                      <div class="text-3xl font-bold text-brand mb-1" data-count="${stat.number}">0</div>
-                      <div class="text-sm text-slate">${stat.label}</div>
+                      <div class="counter text-3xl md:text-4xl font-bold text-brand mb-2" data-count="${stat.number}">0</div>
+                      <div class="text-sm text-slate font-medium">${stat.label}</div>
                     </div>
                   `).join('')}
                 </div>
@@ -322,13 +427,12 @@ class PortfolioApp {
               
               <div class="flex justify-center">
                 <div class="relative group">
-                  <div class="w-64 h-64 rounded-full border-4 border-brand overflow-hidden shadow-2xl group-hover:shadow-brand/20 transition-all duration-500">
+                  <div class="w-72 h-72 rounded-full border-4 border-brand overflow-hidden shadow-2xl group-hover:shadow-brand/30 transition-all duration-500">
                     <img src="/assets/profile-img.jpg" alt="Daniel Lopes - Engenheiro de Software" 
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        onerror="this.src='/assets/placeholder-profile.jpg'; this.alt='Imagem de perfil não disponível'">
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                         onerror="this.style.display='none'">
                   </div>
-                  <div class="absolute inset-0 border-2 border-brand rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div class="absolute -inset-4 bg-brand/10 rounded-full blur-xl group-hover:opacity-100 opacity-0 transition-opacity duration-500"></div>
+                  <div class="absolute -inset-4 bg-brand/20 rounded-full blur-xl group-hover:opacity-100 opacity-0 transition-opacity duration-500"></div>
                 </div>
               </div>
             </div>
@@ -336,25 +440,25 @@ class PortfolioApp {
         </section>
 
         <!-- Skills Section -->
-        <section id="habilidades" class="section py-20 bg-lightNavy">
+        <section id="habilidades" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-lightNavy">
           <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-lightestSlate mb-12 flex items-center">
-              <span class="text-brand text-xl mr-3">02.</span> Habilidades
+            <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-16 flex items-center">
+              <span class="text-brand text-xl md:text-2xl mr-4 font-mono">02.</span> Habilidades
             </h2>
             
-            <div class="grid md:grid-cols-2 gap-12 mb-12">
+            <div class="grid md:grid-cols-2 gap-16 mb-16">
               <!-- Hard Skills -->
               <div>
-                <h3 class="text-xl font-semibold text-lightestSlate mb-6 flex items-center">
-                  <i class="fas fa-laptop-code text-brand mr-3"></i> Hard Skills
+                <h3 class="text-2xl font-semibold text-lightestSlate mb-8 flex items-center">
+                  <i class="fas fa-laptop-code text-brand mr-4 text-xl"></i> Hard Skills
                 </h3>
                 ${skills.hard.map(skill => this.renderSkillBar(skill)).join('')}
               </div>
               
               <!-- Soft Skills -->
               <div>
-                <h3 class="text-xl font-semibold text-lightestSlate mb-6 flex items-center">
-                  <i class="fas fa-user-check text-brand mr-3"></i> Soft Skills
+                <h3 class="text-2xl font-semibold text-lightestSlate mb-8 flex items-center">
+                  <i class="fas fa-user-check text-brand mr-4 text-xl"></i> Soft Skills
                 </h3>
                 ${skills.soft.map(skill => this.renderSkillBar(skill)).join('')}
               </div>
@@ -362,13 +466,13 @@ class PortfolioApp {
             
             <!-- Additional Skills -->
             <div>
-              <h3 class="text-xl font-semibold text-lightestSlate mb-6">Em Desenvolvimento</h3>
+              <h3 class="text-2xl font-semibold text-lightestSlate mb-8">Em Desenvolvimento</h3>
               <div class="flex flex-wrap gap-3">
                 ${[
                   'HTML5 & CSS3', 'JavaScript', 'Python', 'Redes de Computadores',
                   'Linux', 'Fundamentos de Criptografia', 'Ethical Hacking', 'Cybersecurity'
                 ].map(skill => `
-                  <span class="bg-navy text-lightestSlate px-4 py-2 rounded-full text-sm border border-gray-700">
+                  <span class="bg-navy text-lightestSlate px-4 py-3 rounded-lg text-sm border border-gray-700 hover:border-brand/50 hover:transform hover:-translate-y-1 transition-all duration-300">
                     ${skill}
                   </span>
                 `).join('')}
@@ -378,29 +482,27 @@ class PortfolioApp {
         </section>
 
         <!-- Projects Section -->
-        <section id="projetos" class="section py-20">
+        <section id="projetos" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-navy">
           <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-lightestSlate mb-12 flex items-center">
-              <span class="text-brand text-xl mr-3">03.</span> Projetos
+            <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-16 flex items-center">
+              <span class="text-brand text-xl md:text-2xl mr-4 font-mono">03.</span> Projetos
             </h2>
             
-            <div class="grid md:grid-cols-3 gap-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               ${projects.map(project => this.renderProjectCard(project)).join('')}
             </div>
           </div>
         </section>
 
         <!-- Timeline Section -->
-        <section id="historico" class="section py-20 bg-lightNavy">
+        <section id="historico" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-lightNavy">
           <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-lightestSlate mb-12 flex items-center">
-              <span class="text-brand text-xl mr-3">04.</span> Histórico Profissional e Acadêmico
+            <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-16 flex items-center">
+              <span class="text-brand text-xl md:text-2xl mr-4 font-mono">04.</span> Histórico Profissional e Acadêmico
             </h2>
             
             <div class="relative">
-              <div class="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-brand hidden md:block"></div>
-              
-              <div class="space-y-12">
+              <div class="space-y-4">
                 ${timeline.map((item, index) => this.renderTimelineItem(item, index)).join('')}
               </div>
             </div>
@@ -408,42 +510,48 @@ class PortfolioApp {
         </section>
 
         <!-- Contact Section -->
-        <section id="contato" class="section py-20">
+        <section id="contato" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-navy">
           <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-lightestSlate mb-4 text-center">
-              <span class="text-brand text-xl mr-3">05.</span> Contato
+            <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-4 text-center">
+              <span class="text-brand text-xl md:text-2xl mr-4 font-mono">05.</span> Contato
             </h2>
-            <p class="text-slate text-center mb-12">Aberto a oportunidades e colaborações.</p>
+            <p class="text-slate text-xl text-center mb-16 max-w-2xl mx-auto">
+              Aberto a oportunidades e colaborações. Vamos conversar sobre como posso agregar valor ao seu projeto.
+            </p>
             
             <div class="max-w-4xl mx-auto">
-              <div class="grid md:grid-cols-2 gap-6 mb-6">
+              <div class="grid md:grid-cols-2 gap-6 mb-8">
                 ${[
                   { icon: 'envelope', type: 'Email', value: 'danielchrono@gmail.com', href: 'mailto:danielchrono@gmail.com' },
                   { icon: 'whatsapp', type: 'Telefone', value: '(31) 99292-8444', href: 'http://wa.me/+5531992928444' }
                 ].map(contact => `
-                  <a href="${contact.href}" class="bg-lightNavy rounded-lg p-6 hover:transform hover:-translate-y-2 transition-all duration-300 border border-gray-800 hover:border-brand/30 group">
-                    <div class="flex items-center space-x-4">
-                      <i class="fas fa-${contact.icon} text-brand text-2xl group-hover:scale-110 transition-transform"></i>
+                  <a href="${contact.href}" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
+                    <div class="flex items-center space-x-6">
+                      <div class="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
+                        <i class="fas fa-${contact.icon} text-brand text-2xl group-hover:scale-110 transition-transform duration-300"></i>
+                      </div>
                       <div>
-                        <h4 class="text-lightestSlate font-semibold">${contact.type}</h4>
-                        <span class="text-slate">${contact.value}</span>
+                        <h4 class="text-lightestSlate font-bold text-lg mb-1">${contact.type}</h4>
+                        <span class="text-slate group-hover:text-lightestSlate transition-colors duration-300">${contact.value}</span>
                       </div>
                     </div>
                   </a>
                 `).join('')}
               </div>
               
-              <div class="grid md:grid-cols-2 gap-6 mb-8">
+              <div class="grid md:grid-cols-2 gap-6 mb-12">
                 ${[
                   { icon: 'linkedin-in', type: 'LinkedIn', value: 'Meu Perfil Profissional', href: 'https://linkedin.com/in/danieldepaulaglopes' },
                   { icon: 'github', type: 'GitHub', value: 'Meus Repositórios', href: 'https://github.com/danielchrono' }
                 ].map(social => `
-                  <a href="${social.href}" target="_blank" class="bg-lightNavy rounded-lg p-6 hover:transform hover:-translate-y-2 transition-all duration-300 border border-gray-800 hover:border-brand/30 group">
-                    <div class="flex items-center space-x-4">
-                      <i class="fab fa-${social.icon} text-brand text-2xl group-hover:scale-110 transition-transform"></i>
+                  <a href="${social.href}" target="_blank" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
+                    <div class="flex items-center space-x-6">
+                      <div class="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
+                        <i class="fab fa-${social.icon} text-brand text-2xl group-hover:scale-110 transition-transform duration-300"></i>
+                      </div>
                       <div>
-                        <h4 class="text-lightestSlate font-semibold">${social.type}</h4>
-                        <span class="text-slate">${social.value}</span>
+                        <h4 class="text-lightestSlate font-bold text-lg mb-1">${social.type}</h4>
+                        <span class="text-slate group-hover:text-lightestSlate transition-colors duration-300">${social.value}</span>
                       </div>
                     </div>
                   </a>
@@ -451,13 +559,13 @@ class PortfolioApp {
               </div>
               
               <div class="text-center">
-                <button id="map-toggle" class="border-2 border-brand text-brand px-8 py-3 rounded font-semibold hover:bg-brand hover:text-navy transition-all duration-300">
-                  <i class="fas fa-map-marker-alt mr-2"></i>
-                  Ver Localização
+                <button id="map-toggle" class="border-2 border-brand text-brand px-10 py-4 rounded-lg font-bold hover:bg-brand hover:text-navy transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center space-x-3 mx-auto">
+                  <span id="map-icon"><i class="fas fa-map-marker-alt"></i></span>
+                  <span id="map-text">Ver Localização</span>
                 </button>
               </div>
               
-              <div id="map-container" class="mt-8 rounded-lg overflow-hidden hidden">
+              <div id="map-container" class="mt-12 rounded-2xl overflow-hidden hidden shadow-2xl">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1875.8859037057657!2d-43.97271126167558!3d-19.891855295371986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa690cfec386847%3A0x70914e1de91c238c!2sRua%20%C3%81lvaro%20Alvim%2C%202265%20-%20Vila%20Amaral%2C%20Belo%20Horizonte%20-%20MG%2C%2030775-190!5e0!3m2!1spt-BR!2sbr!4v1762386692291!5m2!1spt-BR!2sbr"
                   width="100%"
@@ -474,62 +582,25 @@ class PortfolioApp {
       </main>
 
       <!-- Footer -->
-      <footer class="bg-navy border-t border-gray-800 py-8">
+      <footer class="bg-lightNavy border-t border-gray-800/50 py-8">
         <div class="container mx-auto px-6 text-center">
           <p class="text-slate">&copy; 2025 Daniel Lopes. Todos os direitos reservados.</p>
         </div>
       </footer>
     `;
-
-    // Initialize animations after render
-    this.initializeAnimations();
   }
 
-  private getNavIcon(item: string): string {
-    const icons: { [key: string]: string } = {
-      'Sobre': 'user',
-      'Habilidades': 'tools',
-      'Projetos': 'laptop-code',
-      'Historico': 'history',
-      'Contato': 'envelope'
-    };
-    return icons[item] || 'circle';
-  }
-
-  private initializeAnimations(): void {
-    // Animate counters
-    const counters = document.querySelectorAll('[data-count]');
-    counters.forEach(counter => {
-      const target = parseInt(counter.getAttribute('data-count') || '0');
-      this.animateCounter(counter as HTMLElement, target);
-    });
-
-    // Animate skill bars
-    const skillProgresses = document.querySelectorAll('.skill-progress');
-    skillProgresses.forEach(progress => {
-      const percentage = progress.getAttribute('data-percentage');
-      if (percentage) {
-        setTimeout(() => {
-          (progress as HTMLElement).style.width = `${percentage}%`;
-        }, 500);
-      }
-    });
-  }
-
-  private animateCounter(element: HTMLElement, target: number): void {
-    let current = 0;
-    const increment = target / 50;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        element.textContent = target.toString();
-        clearInterval(timer);
-      } else {
-        element.textContent = Math.floor(current).toString();
-      }
-    }, 40);
+  private capitalizeFirstLetter(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 }
 
-// Initialize the app
-new PortfolioApp();
+// Initialize the app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new PortfolioApp();
+});
+
+// Handle errors
+window.addEventListener('error', (event) => {
+  console.error('Application error:', event.error);
+});
