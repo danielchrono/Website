@@ -296,47 +296,44 @@ class PortfolioApp {
   }
 
 private renderTimelineItem(item: TimelineItem, index: number): string {
-  const isEven = index % 2 === 0;
-  const isLast = index === timeline.length - 1;
-  
-  return `
-    <div class="relative w-full mb-8">
-      <!-- Desktop Version -->
-      <div class="hidden md:flex w-full ${isEven ? 'justify-start' : 'justify-end'}">
-        <div class="w-full max-w-2xl ${isEven ? 'pr-12' : 'pl-12'}">
-          <div class="bg-lightNavy rounded-xl p-8 border border-gray-800 shadow-xl hover:shadow-2xl transition-all duration-500 hover:border-brand/50">
-            <div class="text-brand font-bold text-lg mb-3">${item.date}</div>
-            <h3 class="text-lightestSlate font-bold text-2xl mb-2">${item.title}</h3>
-            <p class="text-brand text-lg font-semibold mb-4">${item.subtitle}</p>
-            <p class="text-slate text-base leading-relaxed">${item.description}</p>
-          </div>
+    const isEven = index % 2 === 0;
+    
+    // Classes para alinhamento do conteúdo no desktop
+    const desktopAlignmentClass = isEven ? 'md:justify-start' : 'md:justify-end';
+    const desktopPaddingClass = isEven ? 'md:pr-16' : 'md:pl-16'; // Espaçamento para o centro
+    const desktopTextAlignmentClass = isEven ? 'md:text-right' : 'md:text-left';
+
+    return `
+        <div class="relative w-full mb-12 flex items-center ${desktopAlignmentClass}">
+            
+            <div class="hidden md:flex w-full ${isEven ? 'flex-row' : 'flex-row-reverse'} items-center">
+                <div class="w-1/2 ${desktopPaddingClass}">
+                    <div class="bg-lightNavy rounded-xl p-8 border border-gray-800 shadow-xl hover:shadow-2xl transition-all duration-500 hover:border-brand/50 ${desktopTextAlignmentClass}">
+                        <div class="text-brand font-bold text-lg mb-3">${item.date}</div>
+                        <h3 class="text-lightestSlate font-bold text-2xl mb-2">${item.title}</h3>
+                        <p class="text-brand text-lg font-semibold mb-4">${item.subtitle}</p>
+                        <p class="text-slate text-base leading-relaxed">${item.description}</p>
+                    </div>
+                </div>
+                
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-brand rounded-full border-4 border-lightNavy z-20 shadow-xl"></div>
+            </div>
+            
+            <div class="md:hidden flex w-full relative">
+                
+                <div class="absolute left-[33px] top-4 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-20 transform -translate-x-1/2 shadow-lg"></div>
+
+                <div class="flex-grow ml-16">
+                    <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 mb-4">
+                        <div class="text-brand font-bold text-base mb-2">${item.date}</div>
+                        <h3 class="text-lightestSlate font-bold text-xl mb-2">${item.title}</h3>
+                        <p class="text-brand text-base font-semibold mb-3">${item.subtitle}</p>
+                        <p class="text-slate text-sm leading-relaxed">${item.description}</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      
-      <!-- Mobile Version -->
-      <div class="md:hidden flex w-full">
-        <!-- Timeline line and dot -->
-        <div class="flex-shrink-0 w-16 relative">
-          <div class="absolute left-8 top-0 bottom-0 w-1 bg-brand"></div>
-          <div class="absolute left-6 top-8 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-10 shadow-lg"></div>
-          ${isLast ? '' : '<div class="absolute left-8 top-12 w-1 h-full bg-brand"></div>'}
-        </div>
-        
-        <!-- Content -->
-        <div class="flex-grow ml-4">
-          <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 mb-4">
-            <div class="text-brand font-bold text-base mb-2">${item.date}</div>
-            <h3 class="text-lightestSlate font-bold text-xl mb-2">${item.title}</h3>
-            <p class="text-brand text-base font-semibold mb-3">${item.subtitle}</p>
-            <p class="text-slate text-sm leading-relaxed">${item.description}</p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Central Dot - Desktop Only -->
-      <div class="hidden md:flex absolute left-1/2 top-10 transform -translate-x-1/2 w-6 h-6 bg-brand rounded-full border-4 border-lightNavy z-20 shadow-2xl"></div>
-    </div>
-  `;
+    `;
 }
 
   private render(): void {
@@ -379,8 +376,8 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 bg-navy/98 backdrop-blur-lg z-40 pt-24">
-          <div class="container mx-auto px-6">
+        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 z-40 pt-24">          
+        <div class="container mx-auto px-6 bg-gradient-to-b from-navy to-lightNavy rounded-lg shadow-2xl border border-gray-800/50">
             <nav class="flex flex-col space-y-2">
               ${[
                 { name: 'sobre', icon: 'user' },
@@ -389,7 +386,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
                 { name: 'historico', icon: 'history' },
                 { name: 'contato', icon: 'envelope' }
               ].map((item, index) => `
-                <a href="#${item.name}" class="mobile-link text-lightestSlate hover:text-brand text-2xl font-semibold flex items-center space-x-4 py-4 px-6 rounded-lg hover:bg-lightNavy/50 transition-all duration-300 group">
+                <a href="#${item.name}" class="mobile-link text-lightestSlate hover:text-brand text-2xl font-semibold flex items-center space-x-4 py-4 px-6 rounded-lg hover:bg-lightNavy transition-all duration-300 group">
                   <span class="text-brand text-sm font-mono">0${index + 1}.</span>
                   <i class="fas fa-${item.icon} text-brand text-lg"></i>
                   <span class="group-hover:translate-x-2 transition-transform duration-300">${this.capitalizeFirstLetter(item.name)}</span>
@@ -537,6 +534,10 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
             </h2>
             
             <div class="relative">
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-brand transform -translate-x-1/2 z-0"></div>
+              
+              <div class="md:hidden absolute left-8 top-0 bottom-0 w-0.5 bg-brand z-0"></div>
+              
               <div class="space-y-4">
                 ${timeline.map((item, index) => this.renderTimelineItem(item, index)).join('')}
               </div>

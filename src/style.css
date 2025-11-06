@@ -92,11 +92,29 @@ body {
   }
 }
 
-/* Contact section spacing */
+/* Correção de Seções com Conteúdo Longo (Habilidades e Contato) */
+#habilidades, 
 #contato {
   min-height: 100vh;
+  /* Anula a centralização vertical para permitir que o conteúdo se expanda e role */
+  align-items: flex-start !important; /* Força o alinhamento no topo */
+  
+  /* Garante um padding inferior razoável quando o conteúdo for maior que 100vh */
+  padding-bottom: 6rem;
+}
+
+/* Opcional: Garante que o header compensação funcione no mobile */
+.section {
+    scroll-margin-top: 80px;
+    padding-top: 4rem; /* Garante que o conteúdo comece abaixo do header */
+}
+
+/* Garante que o Contato volte a usar flex para centralizar horizontalmente */
+#contato {
   display: flex;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start !important; /* Mantém o alinhamento no topo */
+  padding-top: 6rem; /* Garante o espaçamento de topo */
 }
 
 #contato .grid {
@@ -190,4 +208,29 @@ section {
 /* Error states */
 .error {
   border-color: #ef4444 !important;
+}
+
+/* Mobile menu improvements */
+#mobile-menu {
+  background-color: #0a192f !important;
+  border-left: 1px solid #1e293b;
+  width: auto;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.5);
+  padding: 1.5rem 4rem 4rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Melhor contraste para os links do menu mobile */
+.mobile-link {
+  border-bottom: 1px solid #1e293b;
+}
+
+.mobile-link:last-child {
+  border-bottom: none;
+}
+
+/* Efeito hover mais suave */
+.mobile-link:hover {
+  background-color: #1e293b !important;
+  transform: translateX(8px);
 }
