@@ -98,6 +98,11 @@
   align-items: center;
 }
 
+.grid {
+  width: fit-content;
+  margin: 2rem auto;
+}
+
 /* Ensure proper spacing */
 .section {
   scroll-margin-top: 80px;

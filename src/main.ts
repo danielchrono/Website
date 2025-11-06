@@ -606,7 +606,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1875.8859037057657!2d-43.97271126167558!3d-19.891855295371986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa690cfec386847%3A0x70914e1de91c238c!2sRua%20%C3%81lvaro%20Alvim%2C%202265%20-%20Vila%20Amaral%2C%20Belo%20Horizonte%20-%20MG%2C%2030775-190!5e0!3m2!1spt-BR!2sbr!4v1762386692291!5m2!1spt-BR!2sbr"
                   width="100%"
-                  height="100vw"
+                  height="400px"
                   style="border:0;"
                   allowfullscreen=""
                   loading="lazy"
