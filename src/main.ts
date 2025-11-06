@@ -543,7 +543,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
                   <a href="${contact.href}" class="bg-lightNavy rounded-xl p-8 hover:transform hover:-translate-y-3 transition-all duration-500 border border-gray-800 hover:border-brand/50 group shadow-lg hover:shadow-2xl">
                     <div class="flex items-center space-x-6">
                       <div class="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
-                        <i class="fas fa-${contact.icon} text-brand text-2xl group-hover:scale-110 transition-transform duration-300"></i>
+                        <i class="${contact.icon.startsWith('fab') ? 'fab' : 'fas'} fa-${contact.icon.replace('fab-', '')} text-brand text-2xl group-hover:scale-110 transition-transform duration-300"></i>
                       </div>
                       <div>
                         <h4 class="text-lightestSlate font-bold text-lg mb-1">${contact.type}</h4>
