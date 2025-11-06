@@ -108,8 +108,6 @@ class PortfolioApp {
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    this.setupMapToggle();
-
     mobileMenuBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleMobileMenu();
@@ -152,6 +150,7 @@ class PortfolioApp {
     });
 
     // Map toggle
+    this.setupMapToggle();
     const mapToggle = document.getElementById('map-toggle');
     const mapContainer = document.getElementById('map-container');
     const mapIcon = document.getElementById('map-icon');
