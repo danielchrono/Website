@@ -460,7 +460,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
               <div class="flex justify-center">
                 <div class="relative group">
                   <div class="w-72 h-72 rounded-full border-4 border-brand overflow-hidden shadow-2xl group-hover:shadow-brand/30 transition-all duration-500">
-                    <img src="/assets/profile-img.jpg" alt="Daniel Lopes - Engenheiro de Software" 
+                    <img src="./assets/profile-img.jpg" alt="Daniel Lopes - Engenheiro de Software" 
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                          onerror="this.style.display='none'">
                   </div>
