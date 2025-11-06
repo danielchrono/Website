@@ -108,6 +108,8 @@ class PortfolioApp {
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
+    this.setupMapToggle();
+
     mobileMenuBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleMobileMenu();
@@ -170,6 +172,57 @@ class PortfolioApp {
       }
     });
   }
+
+  private setupMapToggle(): void {
+  const mapToggle = document.getElementById('map-toggle');
+  const mapContainer = document.getElementById('map-container');
+  const mapIcon = document.getElementById('map-icon');
+  const mapText = document.getElementById('map-text');
+  const contactSection = document.getElementById('contato');
+  const header = document.querySelector('header');
+
+  if (mapToggle && mapContainer && mapIcon && mapText && contactSection && header) {
+    mapToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const isHidden = mapContainer.classList.contains('hidden');
+      
+      // Toggle do mapa
+      mapContainer.classList.toggle('hidden', !isHidden);
+      
+      // Atualizar ícone e texto
+      if (isHidden) {
+        mapIcon.innerHTML = '<i class="fas fa-times"></i>';
+        mapText.textContent = 'Ocultar Mapa';
+        
+        // Scroll para mostrar o mapa
+        setTimeout(() => {
+          const headerHeight = (header as HTMLElement).offsetHeight;
+          const buttonRect = mapToggle.getBoundingClientRect();
+          const buttonTop = buttonRect.top + window.pageYOffset;
+          const adjustedPosition = buttonTop - headerHeight - 20;
+          
+          window.scrollTo({
+            top: adjustedPosition,
+            behavior: 'smooth'
+          });
+        }, 200);
+      } else {
+        mapIcon.innerHTML = '<i class="fas fa-map-marker-alt"></i>';
+        mapText.textContent = 'Ver Localização';
+        
+        // Scroll para o topo da seção de contato
+        const headerHeight = (header as HTMLElement).offsetHeight;
+        const sectionTop = contactSection.getBoundingClientRect().top + window.pageYOffset;
+        
+        window.scrollTo({
+          top: sectionTop - headerHeight,
+          behavior: 'smooth'
+        });
+      }
+    });
+  }
+}
 
   private setupAnimations(): void {
     // Intersection Observer for animations
