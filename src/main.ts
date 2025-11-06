@@ -149,8 +149,7 @@ class PortfolioApp {
       });
     });
 
-    // Map toggle
-    this.setupMapToggle();
+  // Map toggle
     const mapToggle = document.getElementById('map-toggle');
     const mapContainer = document.getElementById('map-container');
     const mapIcon = document.getElementById('map-icon');
@@ -170,6 +169,7 @@ class PortfolioApp {
         }
       }
     });
+  this.setupMapToggle();
   }
 
   private setupMapToggle(): void {
