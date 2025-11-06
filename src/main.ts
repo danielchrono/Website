@@ -333,10 +333,17 @@ class PortfolioApp {
             
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8">
-              ${['sobre', 'habilidades', 'projetos', 'historico', 'contato'].map((item, index) => `
-                <a href="#${item}" class="text-lightestSlate hover:text-brand transition-colors duration-300 text-sm font-medium flex items-center space-x-2 group">
+              ${[
+                { name: 'sobre', icon: 'user' },
+                { name: 'habilidades', icon: 'tools' },
+                { name: 'projetos', icon: 'laptop-code' },
+                { name: 'historico', icon: 'history' },
+                { name: 'contato', icon: 'envelope' }
+              ].map((item, index) => `
+                <a href="#${item.name}" class="text-lightestSlate hover:text-brand transition-colors duration-300 text-sm font-medium flex items-center space-x-2 group">
                   <span class="text-brand text-xs font-mono">0${index + 1}.</span>
-                  <span class="group-hover:translate-y-[-2px] transition-transform duration-300">${this.capitalizeFirstLetter(item)}</span>
+                  <i class="fas fa-${item.icon} text-xs text-brand"></i>
+                  <span class="group-hover:translate-y-[-2px] transition-transform duration-300">${this.capitalizeFirstLetter(item.name)}</span>
                 </a>
               `).join('')}
             </nav>
