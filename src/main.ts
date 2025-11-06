@@ -321,11 +321,14 @@ class PortfolioApp {
               </div>
               
               <div class="flex justify-center">
-                <div class="relative">
-                  <img src="/assets/profile-img.jpg" alt="Daniel Lopes" 
-                       class="w-64 h-64 rounded-full border-4 border-brand object-cover"
-                       onerror="this.style.display='none'">
-                  <div class="absolute inset-0 border-2 border-brand rounded-full animate-pulse"></div>
+                <div class="relative group">
+                  <div class="w-64 h-64 rounded-full border-4 border-brand overflow-hidden shadow-2xl group-hover:shadow-brand/20 transition-all duration-500">
+                    <img src="/assets/profile-img.jpg" alt="Daniel Lopes - Engenheiro de Software" 
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        onerror="this.src='/assets/placeholder-profile.jpg'; this.alt='Imagem de perfil não disponível'">
+                  </div>
+                  <div class="absolute inset-0 border-2 border-brand rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute -inset-4 bg-brand/10 rounded-full blur-xl group-hover:opacity-100 opacity-0 transition-opacity duration-500"></div>
                 </div>
               </div>
             </div>
