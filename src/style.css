@@ -198,7 +198,7 @@ section {
   border-left: 1px solid #1e293b;
   width: auto;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.5);
-  padding: 1.5rem 4rem rem;
+  padding: 1.5rem 1.5rem 4rem 18rem;
   transition: transform 0.3s ease-in-out;
 }
 
