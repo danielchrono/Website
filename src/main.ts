@@ -84,7 +84,7 @@ const timeline: TimelineItem[] = [
     title: 'ETFG (SEBRAE/MG)',
     subtitle: 'Ensino Médio Integrado ao Técnico em Administração',
     description: 'Formação com ênfase em gestão empresarial prática e desenvolvimento de visão sistêmica de negócios.'
-  }
+  },
 ];
 
 // Components
@@ -105,7 +105,6 @@ class PortfolioApp {
   private setupEventListeners(): void {
     // Mobile menu
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
     mobileMenuBtn?.addEventListener('click', (e) => {
@@ -122,8 +121,8 @@ class PortfolioApp {
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      if (this.mobileMenuOpen && 
-          !target.closest('#mobile-menu') && 
+      if (this.mobileMenuOpen &&
+          !target.closest('#mobile-menu') &&
           !target.closest('#mobile-menu-btn')) {
         this.closeMobileMenu();
       }
@@ -135,15 +134,15 @@ class PortfolioApp {
         const href = anchor.getAttribute('href');
         if (href && href !== '#') {
           e.preventDefault();
-          const target = document.querySelector(href);
-          if (target) {
-            const headerHeight = 80;
-            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            
+          const targetEl = document.querySelector(href) as HTMLElement | null;
+          if (targetEl) {
+            const top = targetEl.getBoundingClientRect().top + window.scrollY - this.getHeaderHeight();
             window.scrollTo({
-              top: targetPosition,
+              top,
               behavior: 'smooth'
             });
+            // close mobile menu when navigating
+            this.closeMobileMenu();
           }
         }
       });
@@ -152,44 +151,60 @@ class PortfolioApp {
     // Map toggle
     const mapToggle = document.getElementById('map-toggle');
     const mapContainer = document.getElementById('map-container');
-    const mapIcon = document.getElementById('map-icon');
-    const mapText = document.getElementById('map-text');
 
-    mapToggle?.addEventListener('click', () => {
-      const isHidden = mapContainer?.classList.contains('hidden');
-      mapContainer?.classList.toggle('hidden', !isHidden);
-      
-      if (mapIcon && mapText) {
-        if (isHidden) {
-          mapIcon.innerHTML = '<i class="fas fa-times"></i>';
-          mapText.textContent = 'Ocultar Mapa';
-        } else {
-          mapIcon.innerHTML = '<i class="fas fa-map-marker-alt"></i>';
-          mapText.textContent = 'Ver Localização';
-        }
+    // Abre/fecha o mapa e faz o scroll adequado
+    mapToggle?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!mapContainer) return;
+
+      const isHidden = mapContainer.classList.contains('hidden');
+      if (isHidden) {
+        this.openMap();
+      } else {
+        this.closeMapAndScrollToContato();
       }
     });
+
+    // "Ver localização" - qualquer elemento com essa classe ou um link para #map vai abrir o mapa e rolar até a área
+    document.querySelectorAll('.view-location, a[href="#map"], [data-scroll-to="map"]').forEach(el => {
+      el.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        this.openMap();
+      });
+    });
+
+    // Enhance responsiveness: contact card expansion + timeline collapse on mobile
+    this.enhanceResponsiveUI();
   }
 
   private setupAnimations(): void {
     // Intersection Observer for animations
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in');
-          
-          // Animate counters
-          if (entry.target.classList.contains('counter')) {
-            this.animateCounter(entry.target as HTMLElement);
+        const el = entry.target as HTMLElement;
+
+        // Counters: animar apenas uma vez
+        if (el.classList.contains('counter')) {
+          if (entry.isIntersecting && !el.dataset.animated) {
+            this.animateCounter(el);
           }
-          
-          // Animate skill bars
-          if (entry.target.classList.contains('skill-bar')) {
-            this.animateSkillBar(entry.target as HTMLElement);
+          return;
+        }
+
+        // Skill bars: animar apenas uma vez (mesma lógica)
+        if (el.classList.contains('skill-bar')) {
+          if (entry.isIntersecting && !el.dataset.animated) {
+            this.animateSkillBar(el);
           }
+          return;
+        }
+
+        // Sections: marca quando em view (pode ser usado para efeitos)
+        if (el.classList.contains('section')) {
+          if (entry.isIntersecting) el.classList.add('in-view');
         }
       });
-    }, { 
+    }, {
       threshold: 0.1,
       rootMargin: '-50px 0px -50px 0px'
     });
@@ -234,21 +249,36 @@ class PortfolioApp {
   }
 
   private animateCounter(element: HTMLElement): void {
-    const target = parseInt(element.getAttribute('data-count') || '0');
-    let current = 0;
-    const increment = target / 60;
-    const duration = 2000;
-    const stepTime = duration / 60;
+    // evita múltiplas execuções
+    if (element.dataset.animated) return;
+    element.dataset.animated = 'true';
 
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        element.textContent = target.toString();
-        clearInterval(timer);
+    const target = parseInt(element.getAttribute('data-count') || '0', 10);
+    if (isNaN(target) || target <= 0) {
+      element.textContent = '0';
+      return;
+    }
+
+    const duration = parseInt(element.getAttribute('data-duration') || '1800', 10); // ms
+    const frames = Math.max(30, Math.round(duration / 16));
+    let frame = 0;
+    const start = 0;
+
+    const step = () => {
+      frame++;
+      const progress = frame / frames;
+      // ease out
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(start + (target - start) * eased);
+      element.textContent = String(value);
+      if (frame < frames) {
+        requestAnimationFrame(step);
       } else {
-        element.textContent = Math.floor(current).toString();
+        element.textContent = String(target);
       }
-    }, stepTime);
+    };
+
+    requestAnimationFrame(step);
   }
 
   private animateSkillBar(element: HTMLElement): void {
@@ -403,12 +433,25 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
           <div class="container mx-auto px-6">
             <div class="max-w-4xl">
               <p class="text-brand text-lg md:text-xl mb-4 animate-fade-in">Olá, meu nome é</p>
-              <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-lightestSlate mb-6 animate-fade-in" style="animation-delay: 0.1s">
-                Daniel Lopes.
-              </h1>
-              <h2 class="text-2xl md:text-3xl lg:text-4xl text-slate mb-8 animate-fade-in" style="animation-delay: 0.2s">
-                Construindo pontes entre logística e tecnologia.
-              </h2>
+
+              <!-- Mantém o texto dentro do elemento como fallback; typewriter usará data-text -->
+              <h1
+                class="text-4xl md:text-6xl lg:text-7xl font-bold text-lightestSlate mb-6 animate-fade-in"
+                style="animation-delay: 0.1s"
+                data-typewriter
+                data-text="Daniel Lopes."
+                data-type-speed="40"
+                aria-live="polite"
+              >Daniel Lopes.</h1>
+
+              <h2
+                class="text-2xl md:text-3xl lg:text-4xl text-slate mb-8 animate-fade-in"
+                style="animation-delay: 0.2s"
+                data-typewriter
+                data-text="Construindo pontes entre logística e tecnologia."
+                data-type-speed="28"
+              >Construindo pontes entre logística e tecnologia.</h2>
+              
               <p class="text-slate text-lg md:text-xl mb-12 max-w-3xl leading-relaxed animate-fade-in" style="animation-delay: 0.3s">
                 Profissional em transição da logística para a tecnologia, com mais de 
                 <strong class="text-lightestSlate font-semibold">10 anos de experiência</strong> em gestão e implantação de processos. 
@@ -478,7 +521,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">02.</span> Habilidades
             </h2>
             
-            <div class="grid md:grid-cols-2 gap-16 mb-16">
+            <div class="grid md:grid-cols-2 gap-16 mb-4">
               <!-- Hard Skills -->
               <div>
                 <h3 class="text-2xl font-semibold text-lightestSlate mb-8 flex items-center">
@@ -631,11 +674,208 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
   private capitalizeFirstLetter(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
+
+  // calcula altura do header (fallback 80px)
+  private getHeaderHeight(): number {
+    const header = document.querySelector('header') as HTMLElement | null;
+    return header ? header.offsetHeight : 80;
+  }
+
+  // rola suavemente até um elemento considerando header fixo
+  private scrollToElement(element: HTMLElement, extraOffset = 12): void {
+    const top = element.getBoundingClientRect().top + window.scrollY - this.getHeaderHeight() - extraOffset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  private openMap(): void {
+    const mapContainer = document.getElementById('map-container');
+    const mapToggle = document.getElementById('map-toggle');
+    const mapText = document.getElementById('map-text');
+    if (!mapContainer || !mapToggle) return;
+
+    mapContainer.classList.remove('hidden');
+    mapToggle.classList.remove('hidden');
+
+    if (mapText) mapText.textContent = 'Ocultar mapa';
+
+    const iframe = mapContainer.querySelector('iframe') as HTMLIFrameElement | null;
+
+    const doScroll = () => {
+      // pequeno delay para garantir layout atualizado antes da rolagem
+      setTimeout(() => {
+        this.scrollToElement(mapToggle as HTMLElement, 8);
+      }, 60);
+    };
+
+    if (iframe) {
+      // tenta rolar somente após o iframe disparar load; fallback após 2s
+      let handled = false;
+      const onLoad = () => {
+        if (handled) return;
+        handled = true;
+        iframe.removeEventListener('load', onLoad);
+        doScroll();
+      };
+      iframe.addEventListener('load', onLoad);
+
+      // fallback para caso o evento não dispare (cache / cross-origin)
+      setTimeout(() => {
+        if (!handled) {
+          handled = true;
+          try { iframe.removeEventListener('load', onLoad); } catch {}
+          doScroll();
+        }
+      }, 200);
+    } else {
+      doScroll();
+    }
+  }
+
+  private closeMapAndScrollToContato(): void {
+    const mapContainer = document.getElementById('map-container');
+    const mapToggle = document.getElementById('map-toggle');
+    const mapText = document.getElementById('map-text');
+    if (mapContainer) mapContainer.classList.add('hidden');
+    if (mapText) mapText.textContent = 'Ver Localização';
+
+    const contato = document.getElementById('contato')
+      || document.getElementById('contact')
+      || document.querySelector('[data-section="contato"]')
+      || document.querySelector('section.contact') as HTMLElement | null;
+
+    if (contato) {
+      this.scrollToElement(contato, 8);
+    } else if (mapToggle) {
+      this.scrollToElement(mapToggle as HTMLElement, 8);
+    }
+  }
+
+  // Ajustes de UI responsivos: expande cards/timeline no mobile e adiciona classes úteis
+  private enhanceResponsiveUI(): void {
+    // Contact cards: adiciona comportamento de expansão no mobile
+    const contactCards = Array.from(document.querySelectorAll('#contato .grid a')) as HTMLElement[];
+    contactCards.forEach(card => {
+      card.classList.add('contact-card');
+
+      const toggle = (e?: Event) => {
+        if (window.innerWidth >= 768) return; // só mobile
+        if (e) e.preventDefault();
+        card.classList.toggle('contact-expanded');
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
+      };
+
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') toggle(ev);
+      });
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+    });
+
+    // Timeline: torna cada item clicável para expandir em telas pequenas
+    const timelineItems = Array.from(document.querySelectorAll('#historico .space-y-4 > *')) as HTMLElement[];
+    timelineItems.forEach(item => {
+      item.classList.add('timeline-item');
+      const clickable = (item.querySelector('.timeline-header') as HTMLElement | null) ?? item;
+      clickable.setAttribute('tabindex', '0');
+      clickable.setAttribute('role', 'button');
+
+      const toggle = () => {
+        if (window.innerWidth >= 768) return;
+        const expanded = item.classList.toggle('expanded');
+        if (expanded) {
+          timelineItems.forEach(it => { if (it !== item) it.classList.remove('expanded'); });
+        }
+        setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+      };
+
+      clickable.addEventListener('click', () => toggle());
+      clickable.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggle(); }
+      });
+    });
+
+    // Atualiza limites caso a viewport mude (ex: rotação)
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.section .container').forEach(c => {
+        (c as HTMLElement).style.maxHeight = `none`;
+      });
+    });
+  }
+
+  // typewriter: digita textos em elementos marcados com data-typewriter
+  public typeIntro(): void {
+    document.querySelectorAll<HTMLElement>('[data-typewriter]').forEach(el => {
+      // já digitado -> ignora
+      if (el.dataset.typed === 'true') return;
+
+      const source = el.getAttribute('data-text') ?? el.textContent ?? '';
+      const full = source.trim();
+      if (!full) return;
+
+      // preserva acessibilidade (texto presente como fallback) mas limpa para animação visual
+      el.textContent = '';
+
+      el.dataset.typed = 'false';
+      const speedAttr = el.getAttribute('data-type-speed');
+      const baseSpeed = Math.max(12, parseInt(speedAttr || '40', 10));
+
+      let i = 0;
+      const tick = () => {
+        if (i < full.length) {
+          el.textContent += full.charAt(i);
+          i++;
+          // variação sutil para parecer humano
+          const variance = Math.round((Math.random() - 0.5) * 30);
+          setTimeout(tick, Math.max(8, baseSpeed + variance));
+        } else {
+          el.dataset.typed = 'true';
+        }
+      };
+
+      // pequeno delay para sincronizar com o reveal
+      setTimeout(tick, 120);
+    });
+  }
 }
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new PortfolioApp();
+  // cria preloader DOM (simples e isolado)
+  const createPreloader = (): HTMLElement => {
+    const p = document.createElement('div');
+    p.id = 'preloader';
+    p.className = 'preloader';
+    p.innerHTML = `<div class="spinner" aria-hidden="true"></div>`;
+    document.body.appendChild(p);
+    return p;
+  };
+
+  const preloader = createPreloader();
+
+  // instancia o app imediatamente para montar listeners / observer (mas conteúdo fica oculto via CSS até o reveal)
+  const app = new PortfolioApp();
+
+  // Ensure reveal calls the typewriter (inside DOMContentLoaded handler)
+  const reveal = () => {
+    // libera transições e remove preloader
+    document.documentElement.classList.add('ready');
+    preloader.classList.add('hidden');
+    setTimeout(() => preloader.remove(), 800);
+
+    // inicia typewriter (só uma vez)
+    try { app.typeIntro(); } catch (e) { /* silencioso */ }
+  };
+
+  // espera o load completo (imagens/iframes) — fallback em 2s
+  if (document.readyState === 'complete') {
+    reveal();
+  } else {
+    window.addEventListener('load', () => reveal(), { once: true });
+    setTimeout(() => {
+      if (!document.documentElement.classList.contains('ready')) reveal();
+    }, 2000);
+  }
 });
 
 // Handle errors
