@@ -314,7 +314,7 @@ class PortfolioApp {
           <div class="flex space-x-4">
             ${project.githubUrl ? `
               <a href="${project.githubUrl}" class="text-slate hover:text-brand transition-colors duration-300 text-lg">
-                <i class="fab fa-github"></i>
+                <i class="fab fa-github" style="font-size: 2rem;"></i>
               </a>
             ` : ''}
           </div>
