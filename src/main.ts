@@ -1,3 +1,5 @@
+import './style.css';
+
 // Types
 interface Skill {
   name: string;
@@ -9,6 +11,7 @@ interface Project {
   description: string;
   githubUrl?: string;
   liveUrl?: string;
+  imageUrl?: string;
 }
 
 interface TimelineItem {
@@ -16,6 +19,7 @@ interface TimelineItem {
   title: string;
   subtitle: string;
   description: string;
+  icon?: string;
 }
 
 // Data
@@ -82,17 +86,13 @@ const timeline: TimelineItem[] = [
     title: 'ETFG (SEBRAE/MG)',
     subtitle: 'Ensino Médio Integrado ao Técnico em Administração',
     description: 'Formação com ênfase em gestão empresarial prática e desenvolvimento de visão sistêmica de negócios.'
-  }
+  },
 ];
 
 // Components
 class PortfolioApp {
   private mobileMenuOpen = false;
   private observer: IntersectionObserver | null = null;
-  
-  // NOVAS PROPRIEDADES DE CLASSE PARA ELEMENTOS DO MENU
-  private mobileMenuBtn: HTMLElement | null = null;
-  private mobileMenu: HTMLElement | null = null;
 
   constructor() {
     this.init();
@@ -100,21 +100,16 @@ class PortfolioApp {
 
   private init(): void {
     this.render();
-    
-    // CAPTURA OS ELEMENTOS APÓS A RENDERIZAÇÃO
-    this.mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    this.mobileMenu = document.getElementById('mobile-menu');
-    
     this.setupEventListeners();
     this.setupAnimations();
   }
 
   private setupEventListeners(): void {
     // Mobile menu
-    // A variável mobileMenu já foi movida para this.mobileMenu
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    this.mobileMenuBtn?.addEventListener('click', (e) => {
+    mobileMenuBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleMobileMenu();
     });
@@ -128,9 +123,8 @@ class PortfolioApp {
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      if (this.mobileMenuOpen && 
-          // Usa as propriedades de classe
-          !target.closest('#mobile-menu') && 
+      if (this.mobileMenuOpen &&
+          !target.closest('#mobile-menu') &&
           !target.closest('#mobile-menu-btn')) {
         this.closeMobileMenu();
       }
@@ -142,99 +136,71 @@ class PortfolioApp {
         const href = anchor.getAttribute('href');
         if (href && href !== '#') {
           e.preventDefault();
-          const target = document.querySelector(href);
-          if (target) {
-            const headerHeight = 80;
-            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            
+          const targetEl = document.querySelector(href) as HTMLElement | null;
+          if (targetEl) {
+            const top = targetEl.getBoundingClientRect().top + window.scrollY - this.getHeaderHeight();
             window.scrollTo({
-              top: targetPosition,
+              top,
               behavior: 'smooth'
             });
+            // close mobile menu when navigating
+            this.closeMobileMenu();
           }
         }
       });
     });
 
-    // Map toggle (Com rolagem e correção de centralização)
+    // Map toggle
     const mapToggle = document.getElementById('map-toggle');
     const mapContainer = document.getElementById('map-container');
-    const header = document.getElementById('site-header');
-    const mapIcon = document.getElementById('map-icon');
-    const mapText = document.getElementById('map-text');
-    const contactSection = document.getElementById('contato');
 
+    // Abre/fecha o mapa e faz o scroll adequado
     mapToggle?.addEventListener('click', (e) => {
       e.preventDefault();
-      
-      const isHidden = mapContainer?.classList.contains('hidden');
-      mapContainer?.classList.toggle('hidden', !isHidden);
-      
-      if (mapIcon && mapText) {
-        if (isHidden) {
-          // MODO: MAPA ABERTO
-          mapIcon.innerHTML = '<i class="fas fa-times"></i>';
-          mapText.textContent = 'Ocultar Mapa';
-          
-          // SCROLL PARA O BOTÃO APÓS ABRIR O MAPA
-          if (header && contactSection && mapToggle) {
-            const headerHeight = header.offsetHeight;
-            const offsetMargin = 30;
-            
-            setTimeout(() => {
-                const linkTopPosition = mapToggle.getBoundingClientRect().top + window.scrollY;
-                const adjustedPosition = linkTopPosition - headerHeight - offsetMargin;
-                
-                window.scrollTo({
-                    top: adjustedPosition,
-                    behavior: "smooth"
-                });
-            }, 500); 
-          }
+      if (!mapContainer) return;
 
-        } else {
-          // MODO: MAPA FECHADO
-          mapIcon.innerHTML = '<i class="fas fa-map-marker-alt"></i>';
-          mapText.textContent = 'Ver Localização';
-          
-          // SCROLL PARA O TOPO DA SEÇÃO CONTATO APÓS FECHAR O MAPA
-          if (header && contactSection) {
-             const headerHeight = header.offsetHeight;
-             setTimeout(() => {
-                const targetTop = contactSection.getBoundingClientRect().top + window.scrollY - headerHeight - 10;
-                
-                window.scrollTo({
-                    top: targetTop,
-                    behavior: "smooth"
-                });
-            }, 500);
-          }
-        }
+      const isHidden = mapContainer.classList.contains('hidden');
+      if (isHidden) {
+        this.openMap();
+      } else {
+        this.closeMapAndScrollToContato();
       }
     });
+
+    // "Ver localização" - qualquer elemento com essa classe ou um link para #map vai abrir o mapa e rolar até a área
+    document.querySelectorAll('.view-location, a[href="#map"], [data-scroll-to="map"]').forEach(el => {
+      el.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        this.openMap();
+      });
+    });
+
+    // Enhance responsiveness: contact card expansion + timeline collapse on mobile
+    this.enhanceResponsiveUI();
   }
 
   private setupAnimations(): void {
-    // Intersection Observer for animations
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in');
-          
-          // Animate counters
-          if (entry.target.classList.contains('counter')) {
-            this.animateCounter(entry.target as HTMLElement);
-          }
-          
-          // Animate skill bars
-          if (entry.target.classList.contains('skill-bar-progress')) {
-            this.animateSkillBar(entry.target as HTMLElement);
-          }
-        }
-      });
-    }, { 
-      threshold: 0.1,
-      rootMargin: '-50px 0px -50px 0px'
+        this.observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            
+            const el = entry.target as HTMLElement;
+            
+            if (el.classList.contains('counter') && !el.dataset.animated) {
+                this.animateCounter(el);
+            }
+            else if (el.classList.contains('skill-bar') && !el.dataset.animated) {
+                this.animateSkillBar(el);
+            }
+            else if (el.classList.contains('section')) {
+                el.classList.add('in-view');
+                // Para após primeira animação
+                this.observer?.unobserve(el);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
 
     // Observe sections
@@ -248,15 +214,14 @@ class PortfolioApp {
     });
 
     // Observe skill bars
-    document.querySelectorAll('.skill-bar-progress').forEach(bar => {
+    document.querySelectorAll('.skill-bar').forEach(bar => {
       this.observer?.observe(bar);
     });
   }
 
   private toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
-    // Usa a propriedade de classe
-    const mobileMenu = this.mobileMenu;
+    const mobileMenu = document.getElementById('mobile-menu');
     const body = document.body;
 
     if (this.mobileMenuOpen) {
@@ -270,8 +235,7 @@ class PortfolioApp {
 
   private closeMobileMenu(): void {
     this.mobileMenuOpen = false;
-    // Usa a propriedade de classe
-    const mobileMenu = this.mobileMenu;
+    const mobileMenu = document.getElementById('mobile-menu');
     const body = document.body;
 
     mobileMenu?.classList.add('hidden');
@@ -279,26 +243,40 @@ class PortfolioApp {
   }
 
   private animateCounter(element: HTMLElement): void {
-    const target = parseInt(element.getAttribute('data-count') || '0');
-    let current = 0;
-    const increment = target / 60;
-    const duration = 2000;
-    const stepTime = duration / 60;
+    // evita múltiplas execuções
+    if (element.dataset.animated) return;
+    element.dataset.animated = 'true';
 
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        element.textContent = target.toString();
-        clearInterval(timer);
+    const target = parseInt(element.getAttribute('data-count') || '0', 10);
+    if (isNaN(target) || target <= 0) {
+      element.textContent = '0';
+      return;
+    }
+
+    const duration = parseInt(element.getAttribute('data-duration') || '1800', 10); // ms
+    const frames = Math.max(30, Math.round(duration / 16));
+    let frame = 0;
+    const start = 0;
+
+    const step = () => {
+      frame++;
+      const progress = frame / frames;
+      // ease out
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(start + (target - start) * eased);
+      element.textContent = String(value);
+      if (frame < frames) {
+        requestAnimationFrame(step);
       } else {
-        element.textContent = Math.floor(current).toString();
+        element.textContent = String(target);
       }
-    }, stepTime);
+    };
+
+    requestAnimationFrame(step);
   }
 
   private animateSkillBar(element: HTMLElement): void {
-    const parent = element.closest('.skill-bar');
-    const percentage = parent?.getAttribute('data-percentage');
+    const percentage = element.getAttribute('data-percentage');
     if (percentage) {
       setTimeout(() => {
         element.style.width = `${percentage}%`;
@@ -313,9 +291,10 @@ class PortfolioApp {
           <span class="text-lightestSlate font-medium">${skill.name}</span>
           <span class="text-brand font-semibold">${skill.percentage}%</span>
         </div>
-        <div class="w-full bg-navy rounded-full h-3 overflow-hidden" data-percentage="${skill.percentage}">
-          <div class="skill-bar-progress bg-brand h-3 rounded-full transition-all duration-1000 ease-out" 
-              style="width: 0%"></div>
+        <div class="w-full bg-navy rounded-full h-3 overflow-hidden">
+          <div class="skill-bar bg-brand h-3 rounded-full transition-all duration-1000 ease-out" 
+               data-percentage="${skill.percentage}"
+               style="width: 0%"></div>
         </div>
       </div>
     `;
@@ -328,8 +307,8 @@ class PortfolioApp {
           <i class="far fa-folder text-brand text-3xl"></i>
           <div class="flex space-x-4">
             ${project.githubUrl ? `
-              <a href="${project.githubUrl}" target="_blank" class="text-slate hover:text-brand transition-colors duration-300 text-lg">
-                <i class="fab fa-github"></i>
+              <a href="${project.githubUrl}" class="text-slate hover:text-brand transition-colors duration-300 text-lg">
+                <i class="fab fa-github" style="font-size: 2rem;"></i>
               </a>
             ` : ''}
           </div>
@@ -340,7 +319,7 @@ class PortfolioApp {
     `;
   }
 
-  private renderTimelineItem(item: TimelineItem, index: number): string {
+private renderTimelineItem(item: TimelineItem, index: number): string {
     const isEven = index % 2 === 0;
     
     // Classes para alinhamento do conteúdo no desktop
@@ -351,7 +330,6 @@ class PortfolioApp {
     return `
         <div class="relative w-full mb-12 flex items-center ${desktopAlignmentClass}">
             
-            <!-- Desktop/Tablet Version (Duas Colunas) -->
             <div class="hidden md:flex w-full ${isEven ? 'flex-row' : 'flex-row-reverse'} items-center">
                 <div class="w-1/2 ${desktopPaddingClass}">
                     <div class="bg-lightNavy rounded-xl p-8 border border-gray-800 shadow-xl hover:shadow-2xl transition-all duration-500 hover:border-brand/50 ${desktopTextAlignmentClass}">
@@ -362,17 +340,13 @@ class PortfolioApp {
                     </div>
                 </div>
                 
-                <!-- Bolha Central - Desktop Only -->
                 <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-brand rounded-full border-4 border-lightNavy z-20 shadow-xl"></div>
             </div>
             
-            <!-- Mobile Version (Uma Coluna) -->
             <div class="md:hidden flex w-full relative">
                 
-                <!-- Mobile Bolha: Corrigido com left-[33px] para centralização pixel-perfeita -->
                 <div class="absolute left-[33px] top-4 w-4 h-4 bg-brand rounded-full border-4 border-lightNavy z-20 transform -translate-x-1/2 shadow-lg"></div>
 
-                <!-- O Conteúdo move para a direita para dar espaço à linha/bolha -->
                 <div class="flex-grow ml-16">
                     <div class="bg-lightNavy rounded-xl p-6 border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 mb-4">
                         <div class="text-brand font-bold text-base mb-2">${item.date}</div>
@@ -384,11 +358,7 @@ class PortfolioApp {
             </div>
         </div>
     `;
-  }
-
-  private capitalizeFirstLetter(string: string): string {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+}
 
   private render(): void {
     const app = document.getElementById('app');
@@ -396,7 +366,7 @@ class PortfolioApp {
 
     app.innerHTML = `
       <!-- Header -->
-      <header id="site-header" class="fixed top-0 w-full bg-navy/95 backdrop-blur-md z-50 border-b border-gray-800/50">
+      <header class="fixed top-0 w-full bg-navy/95 backdrop-blur-md z-50 border-b border-gray-800/50">
         <div class="container mx-auto px-6 py-4">
           <div class="flex justify-between items-center">
             <a href="#inicio" class="text-2xl font-bold text-lightestSlate hover:text-brand transition-colors duration-300">
@@ -430,8 +400,8 @@ class PortfolioApp {
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 z-40 pt-24 bg-navy/95 backdrop-blur-sm">          
-          <div class="container mx-auto px-6 rounded-lg shadow-2xl border border-gray-800/50">
+        <div id="mobile-menu" class="md:hidden hidden fixed inset-0 z-40 pt-24">          
+        <div class="container mx-auto px-6 bg-gradient-to-b from-navy to-lightNavy rounded-lg shadow-2xl border border-gray-800/50">
             <nav class="flex flex-col space-y-2">
               ${[
                 { name: 'sobre', icon: 'user' },
@@ -457,12 +427,25 @@ class PortfolioApp {
           <div class="container mx-auto px-6">
             <div class="max-w-4xl">
               <p class="text-brand text-lg md:text-xl mb-4 animate-fade-in">Olá, meu nome é</p>
-              <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-lightestSlate mb-6 animate-fade-in" style="animation-delay: 0.1s">
-                Daniel Lopes.
-              </h1>
-              <h2 class="text-2xl md:text-3xl lg:text-4xl text-slate mb-8 animate-fade-in" style="animation-delay: 0.2s">
-                Construindo pontes entre logística e tecnologia.
-              </h2>
+
+              <!-- Mantém o texto dentro do elemento como fallback; typewriter usará data-text -->
+              <h1
+                class="text-4xl md:text-6xl lg:text-7xl font-bold text-lightestSlate mb-6 animate-fade-in"
+                style="animation-delay: 0.1s"
+                data-typewriter
+                data-text="Daniel Lopes."
+                data-type-speed="40"
+                aria-live="polite"
+              >Daniel Lopes.</h1>
+
+              <h2
+                class="text-2xl md:text-3xl lg:text-4xl text-slate mb-8 animate-fade-in"
+                style="animation-delay: 0.2s"
+                data-typewriter
+                data-text="Construindo pontes entre logística e tecnologia."
+                data-type-speed="28"
+              >Construindo pontes entre logística e tecnologia.</h2>
+              
               <p class="text-slate text-lg md:text-xl mb-12 max-w-3xl leading-relaxed animate-fade-in" style="animation-delay: 0.3s">
                 Profissional em transição da logística para a tecnologia, com mais de 
                 <strong class="text-lightestSlate font-semibold">10 anos de experiência</strong> em gestão e implantação de processos. 
@@ -514,9 +497,10 @@ class PortfolioApp {
               <div class="flex justify-center">
                 <div class="relative group">
                   <div class="w-72 h-72 rounded-full border-4 border-brand overflow-hidden shadow-2xl group-hover:shadow-brand/30 transition-all duration-500">
-                    <!-- CORREÇÃO: Usando caminho relativo para assets -->
                     <img src="./assets/profile-img.jpg" alt="Daniel Lopes - Engenheiro de Software" 
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                         loading="lazy"
+                         decoding="async"
                          onerror="this.style.display='none'">
                   </div>
                   <div class="absolute -inset-4 bg-brand/20 rounded-full blur-xl group-hover:opacity-100 opacity-0 transition-opacity duration-500"></div>
@@ -527,13 +511,13 @@ class PortfolioApp {
         </section>
 
         <!-- Skills Section -->
-        <section id="habilidades" class="section min-h-screen-dvh flex items-start justify-center py-20 bg-lightNavy">
+        <section id="habilidades" class="section min-h-screen-dvh flex items-center justify-center py-20 bg-lightNavy">
           <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-16 flex items-center">
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">02.</span> Habilidades
             </h2>
             
-            <div class="grid md:grid-cols-2 gap-16 mb-16">
+            <div class="grid md:grid-cols-2 gap-16 mb-4">
               <!-- Hard Skills -->
               <div>
                 <h3 class="text-2xl font-semibold text-lightestSlate mb-8 flex items-center">
@@ -588,12 +572,10 @@ class PortfolioApp {
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">04.</span> Histórico Profissional e Acadêmico
             </h2>
             
-            <div class="relative max-w-4xl mx-auto">
-              <!-- LINHA CENTRAL - DESKTOP ONLY -->
-              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-brand transform -translate-x-1/2 z-0"></div>
+            <div class="relative">
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-brand transform -translate-x-1/2 z-0"></div>
               
-              <!-- LINHA LATERAL - MOBILE ONLY -->
-              <div class="md:hidden absolute left-8 top-0 bottom-0 w-px bg-brand z-0"></div>
+              <div class="md:hidden absolute left-8 top-0 bottom-0 w-0.5 bg-brand z-0"></div>
               
               <div class="space-y-4">
                 ${timeline.map((item, index) => this.renderTimelineItem(item, index)).join('')}
@@ -603,7 +585,7 @@ class PortfolioApp {
         </section>
 
         <!-- Contact Section -->
-        <section id="contato" class="section min-h-screen flex items-start py-20 bg-navy">
+        <section id="contato" class="section min-h-screen flex items-center py-20 bg-navy">
           <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-bold text-lightestSlate mb-4 text-center">
               <span class="text-brand text-xl md:text-2xl mr-4 font-mono">05.</span> Contato
@@ -632,7 +614,7 @@ class PortfolioApp {
                   </a>
                 `).join('')}
               </div>
-                
+                            
               <!-- Social Grid -->
               <div class="grid md:grid-cols-2 gap-4 mb-8">
                 ${[
@@ -684,9 +666,197 @@ class PortfolioApp {
       </footer>
     `;
   }
+
+  private capitalizeFirstLetter(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  // calcula altura do header (fallback 60px)
+  private getHeaderHeight(): number {
+    const header = document.querySelector('header') as HTMLElement | null;
+    return header ? header.offsetHeight : 60;
+  }
+
+  // rola suavemente até um elemento considerando header fixo
+  private scrollToElement(element: HTMLElement, extraOffset = 12): void {
+    const top = element.getBoundingClientRect().top + window.scrollY - this.getHeaderHeight() - extraOffset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  private openMap(): void {
+    const mapContainer = document.getElementById('map-container');
+    const mapToggle = document.getElementById('map-toggle');
+    const mapText = document.getElementById('map-text');
+    if (!mapContainer || !mapToggle) return;
+
+    mapContainer.classList.remove('hidden');
+    mapToggle.classList.remove('hidden');
+
+    if (mapText) mapText.textContent = 'Ocultar mapa';
+
+    const iframe = mapContainer.querySelector('iframe') as HTMLIFrameElement | null;
+
+    const doScroll = () => {
+      // pequeno delay para garantir layout atualizado antes da rolagem
+      setTimeout(() => {
+        this.scrollToElement(mapToggle as HTMLElement, 8);
+      }, 60);
+    };
+
+    if (iframe) {
+      // tenta rolar somente após o iframe disparar load; fallback após 2s
+      let handled = false;
+      const onLoad = () => {
+        if (handled) return;
+        handled = true;
+        iframe.removeEventListener('load', onLoad);
+        doScroll();
+      };
+      iframe.addEventListener('load', onLoad);
+
+      // fallback para caso o evento não dispare (cache / cross-origin)
+      setTimeout(() => {
+        if (!handled) {
+          handled = true;
+          try { iframe.removeEventListener('load', onLoad); } catch {}
+          doScroll();
+        }
+      }, 200);
+    } else {
+      doScroll();
+    }
+  }
+
+  private closeMapAndScrollToContato(): void {
+    const mapContainer = document.getElementById('map-container');
+    const mapToggle = document.getElementById('map-toggle');
+    const mapText = document.getElementById('map-text');
+    if (mapContainer) mapContainer.classList.add('hidden');
+    if (mapText) mapText.textContent = 'Ver Localização';
+
+    const contato = document.getElementById('contato')
+      || document.getElementById('contact')
+      || document.querySelector('[data-section="contato"]')
+      || document.querySelector('section.contact') as HTMLElement | null;
+
+    if (contato) {
+      this.scrollToElement(contato);
+    } else if (mapToggle) {
+      this.scrollToElement(mapToggle as HTMLElement);
+    }
+  }
+
+  // Ajustes de UI responsivos: expande cards/timeline no mobile e adiciona classes úteis
+  private enhanceResponsiveUI(): void {
+    // Contact cards: adiciona comportamento de expansão no mobile
+
+    // Timeline: torna cada item clicável para expandir em telas pequenas
+    const timelineItems = Array.from(document.querySelectorAll('#historico .space-y-4 > *')) as HTMLElement[];
+    timelineItems.forEach(item => {
+      item.classList.add('timeline-item');
+      const clickable = (item.querySelector('.timeline-header') as HTMLElement | null) ?? item;
+      clickable.setAttribute('tabindex', '0');
+      clickable.setAttribute('role', 'button');
+
+      const toggle = () => {
+        if (window.innerWidth >= 768) return;
+        const expanded = item.classList.toggle('expanded');
+        if (expanded) {
+          timelineItems.forEach(it => { if (it !== item) it.classList.remove('expanded'); });
+        }
+        setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+      };
+
+      clickable.addEventListener('click', () => toggle());
+      clickable.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggle(); }
+      });
+    });
+
+    // Atualiza limites caso a viewport mude (ex: rotação)
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.section .container').forEach(c => {
+        (c as HTMLElement).style.maxHeight = `none`;
+      });
+    });
+  }
+
+  // typewriter: digita textos em elementos marcados com data-typewriter
+  public typeIntro(): void {
+    document.querySelectorAll<HTMLElement>('[data-typewriter]').forEach(el => {
+      // já digitado -> ignora
+      if (el.dataset.typed === 'true') return;
+
+      const source = el.getAttribute('data-text') ?? el.textContent ?? '';
+      const full = source.trim();
+      if (!full) return;
+
+      // preserva acessibilidade (texto presente como fallback) mas limpa para animação visual
+      el.textContent = '';
+
+      el.dataset.typed = 'false';
+      const speedAttr = el.getAttribute('data-type-speed');
+      const baseSpeed = Math.max(12, parseInt(speedAttr || '40', 10));
+
+      let i = 0;
+      const tick = () => {
+        if (i < full.length) {
+          el.textContent += full.charAt(i);
+          i++;
+          // variação sutil para parecer humano
+          const variance = Math.round((Math.random() - 0.5) * 30);
+          setTimeout(tick, Math.max(8, baseSpeed + variance));
+        } else {
+          el.dataset.typed = 'true';
+        }
+      };
+
+      // pequeno delay para sincronizar com o reveal
+      setTimeout(tick, 120);
+    });
+  }
 }
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new PortfolioApp();
+  // cria preloader DOM (simples e isolado)
+  const createPreloader = (): HTMLElement => {
+    const p = document.createElement('div');
+    p.id = 'preloader';
+    p.className = 'preloader';
+    p.innerHTML = `<div class="spinner" aria-hidden="true"></div>`;
+    document.body.appendChild(p);
+    return p;
+  };
+
+  const preloader = createPreloader();
+
+  // instancia o app imediatamente para montar listeners / observer (mas conteúdo fica oculto via CSS até o reveal)
+  const app = new PortfolioApp();
+
+  // Ensure reveal calls the typewriter (inside DOMContentLoaded handler)
+  const reveal = () => {
+    // libera transições e remove preloader
+    document.documentElement.classList.add('ready');
+    preloader.classList.add('hidden');
+    setTimeout(() => preloader.remove(), 800);
+
+    // inicia typewriter (só uma vez)
+    try { app.typeIntro(); } catch (e) { /* silencioso */ }
+  };
+
+  // espera o load completo (imagens/iframes) — fallback em 2s
+  if (document.readyState === 'complete') {
+    reveal();
+  } else {
+    window.addEventListener('load', () => reveal(), { once: true });
+    setTimeout(() => {
+      if (!document.documentElement.classList.contains('ready')) reveal();
+    }, 2000);
+  }
+});
+
+// Handle errors
+window.addEventListener('error', (event) => {
+  console.error('Application error:', event.error);
 });
