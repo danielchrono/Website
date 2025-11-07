@@ -616,3 +616,25 @@ section {
 
 /* proteção final: garantir que cards não encolham ou cresçam indevidamente */
 .project-card, .project-thumb, .project-title, .project-desc { box-sizing: border-box; overflow-wrap: anywhere; }
+
+/* Adicionar transições suaves */
+.section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.section.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover effects melhorados */
+.project-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(100, 255, 218, 0.15);
+}

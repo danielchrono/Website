@@ -605,7 +605,7 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
                   { icon: 'fas fa-envelope', type: 'Email', value: 'danielchrono@gmail.com', href: 'mailto:danielchrono@gmail.com' },
                   { icon: 'fab fa-whatsapp', type: 'WhatsApp', value: '(31) 99292-8444', href: 'https://wa.me/5531992928444' }
                 ].map(contact => `
-                  <a href="${contact.href}" class="bg-lightNavy rounded-lg p-4 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-800 hover:border-brand/40 group shadow-md hover:shadow-lg">
+                  <a href="${contact.href}" target="_blank" class="bg-lightNavy rounded-lg p-4 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-800 hover:border-brand/40 group shadow-md hover:shadow-lg">
                     <div class="flex items-center space-x-4">
                       <div class="w-10 h-10 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand/20 transition-colors duration-300">
                         <i class="${contact.icon} text-brand text-lg"></i>
@@ -675,10 +675,10 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  // calcula altura do header (fallback 80px)
+  // calcula altura do header (fallback 60px)
   private getHeaderHeight(): number {
     const header = document.querySelector('header') as HTMLElement | null;
-    return header ? header.offsetHeight : 80;
+    return header ? header.offsetHeight : 60;
   }
 
   // rola suavemente até um elemento considerando header fixo
@@ -744,33 +744,15 @@ private renderTimelineItem(item: TimelineItem, index: number): string {
       || document.querySelector('section.contact') as HTMLElement | null;
 
     if (contato) {
-      this.scrollToElement(contato, 8);
+      this.scrollToElement(contato);
     } else if (mapToggle) {
-      this.scrollToElement(mapToggle as HTMLElement, 8);
+      this.scrollToElement(mapToggle as HTMLElement);
     }
   }
 
   // Ajustes de UI responsivos: expande cards/timeline no mobile e adiciona classes úteis
   private enhanceResponsiveUI(): void {
     // Contact cards: adiciona comportamento de expansão no mobile
-    const contactCards = Array.from(document.querySelectorAll('#contato .grid a')) as HTMLElement[];
-    contactCards.forEach(card => {
-      card.classList.add('contact-card');
-
-      const toggle = (e?: Event) => {
-        if (window.innerWidth >= 768) return; // só mobile
-        if (e) e.preventDefault();
-        card.classList.toggle('contact-expanded');
-        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
-      };
-
-      card.addEventListener('click', toggle);
-      card.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter' || ev.key === ' ') toggle(ev);
-      });
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('role', 'button');
-    });
 
     // Timeline: torna cada item clicável para expandir em telas pequenas
     const timelineItems = Array.from(document.querySelectorAll('#historico .space-y-4 > *')) as HTMLElement[];
