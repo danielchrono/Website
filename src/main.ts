@@ -11,6 +11,7 @@ interface Project {
   description: string;
   githubUrl?: string;
   liveUrl?: string;
+  imageUrl?: string;
 }
 
 interface TimelineItem {
@@ -18,6 +19,7 @@ interface TimelineItem {
   title: string;
   subtitle: string;
   description: string;
+  icon?: string;
 }
 
 // Data
@@ -178,35 +180,27 @@ class PortfolioApp {
   }
 
   private setupAnimations(): void {
-    // Intersection Observer for animations
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const el = entry.target as HTMLElement;
-
-        // Counters: animar apenas uma vez
-        if (el.classList.contains('counter')) {
-          if (entry.isIntersecting && !el.dataset.animated) {
-            this.animateCounter(el);
-          }
-          return;
-        }
-
-        // Skill bars: animar apenas uma vez (mesma lógica)
-        if (el.classList.contains('skill-bar')) {
-          if (entry.isIntersecting && !el.dataset.animated) {
-            this.animateSkillBar(el);
-          }
-          return;
-        }
-
-        // Sections: marca quando em view (pode ser usado para efeitos)
-        if (el.classList.contains('section')) {
-          if (entry.isIntersecting) el.classList.add('in-view');
-        }
-      });
+        this.observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            
+            const el = entry.target as HTMLElement;
+            
+            if (el.classList.contains('counter') && !el.dataset.animated) {
+                this.animateCounter(el);
+            }
+            else if (el.classList.contains('skill-bar') && !el.dataset.animated) {
+                this.animateSkillBar(el);
+            }
+            else if (el.classList.contains('section')) {
+                el.classList.add('in-view');
+                // Para após primeira animação
+                this.observer?.unobserve(el);
+            }
+        });
     }, {
-      threshold: 0.1,
-      rootMargin: '-50px 0px -50px 0px'
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
 
     // Observe sections
