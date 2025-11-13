@@ -65,10 +65,11 @@ export class AnimationManager {
           if (percentage) {
             bar.setAttribute('data-animated', 'true');
             
-            setTimeout(() => {
-              bar.style.transition = 'width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            // CORREÇÃO: Sem delay e sem overshoot
+            requestAnimationFrame(() => {
+              bar.style.transition = 'width 1s ease-out'; // Transição mais suave
               bar.style.width = `${percentage}%`;
-            }, 150);
+            });
           }
         }
       });
@@ -78,7 +79,6 @@ export class AnimationManager {
     });
 
     skillBars.forEach(bar => observer.observe(bar));
-    this.observers.push(observer);
   }
 
   private handleElementInViewport(element: Element): void {

@@ -3,7 +3,7 @@
   background: var(--gradient-hero);
   position: relative;
   padding: calc(var(--header-height) + 2rem) 0 2rem;
-  min-height: 100dvh;
+  min-height: 540px;
   display: flex;
   align-items: center;
   justify-content: center;

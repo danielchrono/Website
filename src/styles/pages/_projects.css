@@ -1,13 +1,12 @@
 /* ===== PROJECTS PAGE ===== */
 #projects {
-  /* padding-top: 0 !important;
-  padding-bottom: 8rem !important; */
-  /* padding: 4rem 0; */
   padding: var(--section-padding);  
   background: var(--navy);
   position: relative;
-  min-height: 100dvh;
+  min-height: 540px;
   justify-content: center;
+  display: flex;
+  align-items: center;
 }
 
 .projects-grid {
@@ -16,6 +15,7 @@
   gap: 1rem;
   overflow-x: auto;
   padding: 1rem 0;
+  align-content: center;  
   scrollbar-width: thin;
   scrollbar-color: var(--green) var(--navy);
 }

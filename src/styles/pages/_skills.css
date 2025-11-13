@@ -1,155 +1,421 @@
-/* ===== SKILLS ===== */
-#skills {
-  /* padding-top: 0 !important;
-  padding-bottom: 4rem !important; */
-  /* padding: 4rem 0; */  
+/* ===== SKILLS SECTION ===== */
+#skills { 
   padding: var(--section-padding);  
   background: var(--light-navy);
-  position: relative;
-  min-height: 100dvh;
+  position: static;
+  min-height: 540px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 
 .skills-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 3rem;
-  margin-bottom: 3rem;
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
 }
 
 @media (min-width: 768px) {
   .skills-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: var(--space-3xl);
+    margin-bottom: var(--space-3xl);
   }
 }
 
+/* CATEGORIAS DE SKILLS - COMPACTO */
 .skills-category {
-  margin-bottom: 1.5rem;
+  background: var(--gradient-card);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-xl);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.skills-category:last-child {
-  margin-bottom: 0;
+.skills-category::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--green-tint), transparent);
+  transition: left 0.6s ease;
+}
+
+.skills-category:hover::before {
+  left: 100%;
+}
+
+.skills-category:hover {
+  border-color: var(--green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .skills-category-title {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
   font-size: 1.1rem;
   color: var(--lightest-slate);
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
 }
 
 .skills-category-icon {
   color: var(--green);
   font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
 }
 
+/* SKILL ITEMS - COMPACTO E EFICIENTE */
 .skill-item {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-lg);
   position: relative;
+  z-index: 2;
 }
 
 .skill-item:last-child {
-  margin-bottom: -1rem;
+  margin-bottom: 0;
 }
 
 .skill-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-xs);
 }
 
 .skill-name {
   color: var(--lightest-slate);
   font-size: 0.9rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .skill-percentage {
   color: var(--green);
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
+  background: rgba(100, 255, 218, 0.1);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 6px;
+  border: 1px solid rgba(100, 255, 218, 0.2);
 }
 
+/* SKILL BARS - SEM OVERSHOOT */
 .skill-bar-container {
   width: 100%;
-  height: 4px;
+  height: 5px;
   background: var(--navy);
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .skill-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--green), var(--accent-cyan));
-  border-radius: 10px;
-  transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(90deg, 
+    var(--green) 0%, 
+    var(--accent-cyan) 50%, 
+    var(--green) 100%);
+  border-radius: 8px;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Easing mais suave */
   width: 0%;
   position: relative;
+  box-shadow: 0 0 8px rgba(100, 255, 218, 0.2);
 }
 
-.skill-bar::after {
+.skill-bar::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+  animation: skillShimmer 2s infinite;
+  border-radius: 8px;
+}
+
+@keyframes skillShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .skill-description {
   font-size: 0.75rem;
   color: var(--slate);
-  margin-top: 0.5rem;
-  font-style: italic;
+  margin-top: var(--space-xs);
   line-height: 1.4;
+  font-style: italic;
+  padding-left: var(--space-sm);
+  border-left: 1px solid var(--green-tint);
 }
 
+/* DEVELOPING SKILLS TAGS - COMPACTO */
 .skills-tags {
-  margin-top: 3rem;
+  background: var(--gradient-card);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-xl);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.skills-tags::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.05), transparent);
+  transition: left 0.6s ease;
+}
+
+.skills-tags:hover::before {
+  left: 100%;
 }
 
 .skills-tags-title {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-lg);
   font-size: 1.1rem;
   color: var(--lightest-slate);
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
 }
 
 .tags-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-sm);
+  justify-content: center;
+  position: relative;
+  z-index: 2;
 }
 
 .tag {
-  background: var(--navy);
+  background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
   color: var(--lightest-slate);
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-xs) var(--space-md);
   border-radius: 16px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-family: var(--font-mono);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  border: 1px solid rgba(100, 255, 218, 0.15);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
+  gap: var(--space-xs);
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.tag::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--green-tint), transparent);
+  transition: left 0.4s ease;
+}
+
+.tag:hover::before {
+  left: 100%;
 }
 
 .tag:hover {
   border-color: var(--green);
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 2px 8px rgba(100, 255, 218, 0.1),
+    0 0 0 1px rgba(100, 255, 218, 0.05);
+  color: var(--green);
 }
 
 .tag-icon {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--green);
+  transition: all 0.2s ease;
+}
+
+.tag:hover .tag-icon {
+  transform: scale(1.1);
+  color: var(--accent-cyan);
+}
+
+/* RESPONSIVIDADE ULTRA COMPACTA */
+@media (max-width: 767px) {
+  .skills-grid {
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+  
+  .skills-category {
+    padding: var(--space-lg);
+  }
+  
+  .skills-tags {
+    padding: var(--space-lg);
+  }
+  
+  .tags-grid {
+    gap: var(--space-xs);
+  }
+  
+  .tag {
+    padding: calc(var(--space-xs) - 2px) var(--space-sm);
+    font-size: 0.75rem;
+  }
+  
+  .skill-item {
+    margin-bottom: var(--space-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .skills-grid {
+    gap: var(--space-3xl);
+  }
+  
+  .skills-category {
+    padding: var(--space-xl);
+  }
+}
+
+@media (min-width: 1440px) {
+  .skills-grid {
+    gap: var(--space-4xl);
+  }
+}
+
+/* ANIMAÇÕES DE ENTRADA SUAVES */
+.skill-item {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeInUpCompact 0.5s ease forwards;
+}
+
+.skill-item:nth-child(1) { animation-delay: 0.05s; }
+.skill-item:nth-child(2) { animation-delay: 0.1s; }
+.skill-item:nth-child(3) { animation-delay: 0.15s; }
+.skill-item:nth-child(4) { animation-delay: 0.2s; }
+.skill-item:nth-child(5) { animation-delay: 0.25s; }
+.skill-item:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes fadeInUpCompact {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ESTADOS DE DESTAQUE MINIMALISTAS */
+.skill-item.highlight .skill-bar {
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.4);
+}
+
+.skill-item.highlight .skill-percentage {
+  background: rgba(100, 255, 218, 0.15);
+  border-color: var(--green);
+}
+
+/* OTIMIZAÇÃO PARA DENSIDADE DE INFORMAÇÃO */
+.skills-category--compact {
+  padding: var(--space-lg);
+}
+
+.skills-category--compact .skill-item {
+  margin-bottom: var(--space-md);
+}
+
+.skills-category--compact .skills-category-title {
+  margin-bottom: var(--space-md);
+  font-size: 1rem;
+}
+
+/* COMPACT MODE - ATIVAR SE PRECISAR MAIS COMPACTO */
+.compact-mode .skills-grid {
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.compact-mode .skills-category {
+  padding: var(--space-lg);
+}
+
+.compact-mode .skill-item {
+  margin-bottom: var(--space-md);
+}
+
+.compact-mode .tags-grid {
+  gap: var(--space-xs);
+}
+
+.compact-mode .tag {
+  padding: calc(var(--space-xs) - 1px) var(--space-sm);
+  font-size: 0.75rem;
+}
+
+/* ACESSIBILIDADE - GARANTIR LEGIBILIDADE */
+@media (max-width: 380px) {
+  .skill-name {
+    font-size: 0.85rem;
+  }
+  
+  .skill-percentage {
+    font-size: 0.7rem;
+    padding: calc(var(--space-xs) - 1px) calc(var(--space-sm) - 2px);
+  }
+  
+  .tag {
+    font-size: 0.7rem;
+    padding: calc(var(--space-xs) - 2px) calc(var(--space-sm) - 2px);
+  }
+}
+
+/* PERFORMANCE - REDUZIR ANIMAÇÕES EM DISPOSITIVOS LENTOS */
+@media (prefers-reduced-motion: reduce) {
+  .skill-bar {
+    transition: width 0.8s ease;
+  }
+  
+  .skill-bar::before {
+    animation: none;
+  }
+  
+  .skill-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .tag:hover {
+    transform: none;
+  }
+  
+  .skills-category:hover {
+    transform: none;
+  }
 }

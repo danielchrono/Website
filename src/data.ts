@@ -64,8 +64,8 @@ export const SKILLS: Skill[] = [
 export const DEVELOPING_SKILLS = [
   'HTML5 & CSS3', 'JavaScript ES6+', 'TypeScript', 'Python',
   'React', 'Node.js', 'Redes de Computadores', 'Linux Administration', 
-  'Fundamentos de Criptografia', 'Ethical Hacking', 'Cybersecurity',
-  'Docker', 'Git & GitHub', 'RESTful APIs', 'Database Design', 
+  'Docker', 'Fundamentos de Criptografia', 'Ethical Hacking', 'Cybersecurity',
+  'Git & GitHub', 'RESTful APIs', 'Database Design', 
   'System Architecture', 'Cloud Computing'
 ];
 

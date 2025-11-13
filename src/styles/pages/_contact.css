@@ -3,7 +3,7 @@
   padding: var(--section-padding);
   background: var(--navy);
   position: relative;
-  min-height: 100dvh; 
+  min-height: 540px; 
   justify-content: center; 
 }
 

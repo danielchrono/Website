@@ -1,12 +1,12 @@
-/* ===== MINI BIO ===== */
+/* ===== MINI BIO - PADRONIZADO ===== */
 #about {
-  /* padding-top: 0 !important; */
-  padding-bottom: 5rem !important;
   background: var(--navy);
   padding: var(--section-padding);
   position: relative;
-  min-height: 100dvh;
-  align-content: center;
+  height: 540px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #about::before {
@@ -22,21 +22,20 @@
 .about-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-lg);
-  align-items: start;
+  gap: var(--space-3xl);
 }
 
 @media (min-width: 768px) {
   .about-grid {
     grid-template-columns: 2fr 1fr;
-    gap: var(--space-xl);
+    gap: var(--space-3xl);
   }
 }
 
 .about-content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .about-text {
@@ -49,11 +48,14 @@
   margin-bottom: var(--space-md);
 }
 
+.about-text p:last-child {
+  margin-bottom: 0;
+}
+
 .about-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-sm);
-  margin-top: var(--space-md);
 }
 
 @media (min-width: 480px) {
@@ -62,13 +64,19 @@
   }
 }
 
+@media (min-width: 768px) {
+  .about-stats {
+    gap: var(--space-md);
+  }
+}
+
 .stat-item {
   text-align: center;
-  padding: var(--space-sm);
+  padding: var(--space-md);
   background: var(--gradient-card);
   border-radius: var(--border-radius);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: var(--transition-bounce);
+  transition: var(--transition-base);
   position: relative;
   overflow: hidden;
 }
@@ -89,7 +97,7 @@
 }
 
 .stat-item:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   border-color: var(--green);
   box-shadow: var(--shadow-md);
 }
@@ -122,18 +130,21 @@
   font-weight: 500;
 }
 
+/* IMAGE - PADRONIZADA ENTRE DISPLAYS */
 .about-image {
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .image-container {
-  width: 180px;
-  height: 180px;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 150px;
   border-radius: var(--border-radius);
-  position: relative;
+  position: absolute;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   border: 2px solid var(--green);
@@ -142,9 +153,16 @@
 
 @media (min-width: 768px) {
   .image-container {
-    /* margin-top: -1.9rem; */
-    width: 23.5rem;
-    height: 23.5rem;
+    width: 250px;
+    height: 250px;
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .image-container {
+    width: 300px;
+    height: 300px;
   }
 }
 
@@ -167,6 +185,7 @@
 
 .image-container:hover {
   box-shadow: var(--shadow-glow);
+  transform: scale(1.02);
 }
 
 .profile-image {
@@ -179,7 +198,7 @@
 }
 
 .image-container:hover .profile-image {
-  transform: scale(1.1);
+  transform: scale(1.05);
   filter: grayscale(0%) contrast(1);
 }
 
