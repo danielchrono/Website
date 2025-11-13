@@ -1,0 +1,136 @@
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 767px) {
+  :root {
+    --header-height: 70px;
+    --section-padding: 2.5rem 0;
+  }
+  
+  .container {
+    padding: 0 var(--space-md);
+  }
+
+  .hero-content {
+    padding: 0 var(--space-md);
+  }
+  
+  .hero-title,
+  .hero-subtitle,
+  .hero-description {
+    text-align: left;
+  }
+  
+  .hero-cta {
+    justify-content: flex-start;
+    gap: var(--space-sm);
+  }
+  
+  .about-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+  
+  .skills-grid {
+    gap: var(--space-lg);
+  }
+  
+  .project-card {
+    width: 280px;
+    padding: var(--space-lg);
+  }
+  
+  .contact-grid,
+  .social-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .contact-card,
+  .social-card {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .section-title::after {
+    max-width: 150px;
+  }
+
+  /* Correção definitiva do scroll mobile */
+  html {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  body {
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  .section {
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --section-padding: 2rem 0;
+  }
+  
+  .container {
+    padding: 0 var(--space-sm);
+  }
+  
+  .btn {
+    padding: var(--space-md) var(--space-lg);
+    font-size: 0.85rem;
+  }
+  
+  .image-container {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .project-card {
+    padding: var(--space-md);
+    width: 260px;
+  }
+  
+  .contact-card,
+  .social-card {
+    min-height: 90px;
+    padding: var(--space-md);
+  }
+  
+  .section-title::after {
+    max-width: 120px;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+  }
+  
+  .hero-cta .btn {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --green: #00ff00;
+    --slate: #ffffff;
+    --light-slate: #f0f0f0;
+    --lightest-slate: #ffffff;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

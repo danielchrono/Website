@@ -1,0 +1,75 @@
+/* ===== ACESSIBILIDADE ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus styles para navegação por teclado */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip link para acessibilidade */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--green);
+  color: var(--navy);
+  padding: 8px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  z-index: var(--z-preloader);
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --green: #00ff00;
+    --navy: #000000;
+    --light-navy: #111111;
+    --slate: #ffffff;
+    --light-slate: #f0f0f0;
+    --lightest-slate: #ffffff;
+  }
+  
+  .skill-bar {
+    background: var(--green) !important;
+  }
+}
+
+/* Diminuir movimento para usuários sensíveis */
+@media (prefers-reduced-motion: reduce) {
+  .hero-greeting,
+  .hero-title,
+  .hero-subtitle,
+  .hero-description,
+  .hero-cta {
+    animation: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  .preloader-spinner {
+    animation: none !important;
+  }
+  
+  .typewriter-complete::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

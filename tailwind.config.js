@@ -7,14 +7,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: '#0a192f',
-        lightNavy: '#112240',
-        slate: '#8892b0',
-        lightestSlate: '#ccd6f6',
-        brand: '#64ffda',
+        navy: {
+          DEFAULT: '#0a192f',
+          light: '#112240',
+          lightest: '#233554'
+        },
+        slate: {
+          DEFAULT: '#8892b0',
+          light: '#a8b2d1',
+          lightest: '#ccd6f6'
+        },
+        green: {
+          DEFAULT: '#64ffda'
+        }
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        mono: ['SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'monospace'],
+        display: ['Calibre', 'Inter', 'system-ui', 'sans-serif']
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

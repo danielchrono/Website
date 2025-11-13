@@ -1,0 +1,44 @@
+/* ===== RESET MODERNO ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
+  font-size: 14px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--navy);
+  color: var(--slate);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+  position: relative;
+  transition: background-color 0.5s var(--transition-smooth), color 0.5s var(--transition-smooth);
+}
+
+/* Garantir temas em todos os elementos */
+[data-theme="light"], [data-theme="dark"] {
+  background-color: var(--navy);
+}
+
+section[data-theme] {
+  background-color: inherit;
+}

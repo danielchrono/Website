@@ -1,0 +1,78 @@
+/* ===== IMPORTS ===== */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Base */
+@import './base/_reset.css';
+@import './base/_variables.css';
+@import './base/_typography.css';
+@import './base/_utilities.css';
+
+/* Components */
+@import './components/_buttons.css';
+@import './components/_cards.css';
+@import './components/_navigation.css';
+@import './components/_forms.css';
+@import './components/_preloader.css';
+@import './components/_map.css';
+
+/* Layout */
+@import './layout/_header.css';
+@import './layout/_sections.css';
+@import './layout/_grid.css';
+@import './layout/_footer.css';
+
+/* Pages/Sections */
+@import './pages/_hero.css';
+@import './pages/_about.css';
+@import './pages/_skills.css';
+@import './pages/_projects.css';
+@import './pages/_timeline.css';
+@import './pages/_contact.css';
+
+/* Utils */
+@import './utils/_animations.css';
+@import './utils/_responsive.css';
+@import './utils/_scrollbar.css';
+@import './utils/_print.css';
+@import './utils/_accessibility.css';
+
+/* ===== STYLES GLOBAIS ===== */
+::selection {
+  background: var(--green-tint);
+  color: var(--green);
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: var(--green-tint);
+  color: var(--green);
+  text-shadow: none;
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--green-tint);
+  border-top: 2px solid var(--green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+/* Performance optimizations */
+.will-change {
+  will-change: transform, opacity;
+}

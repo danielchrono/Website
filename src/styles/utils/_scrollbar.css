@@ -1,0 +1,45 @@
+/* ===== SCROLLBAR PERSONALIZADO ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--navy);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--green);
+  border-radius: 4px;
+  border: 2px solid var(--navy);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4fd3b0;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--navy);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--green) var(--navy);
+}
+
+/* Scrollbar para elementos específicos */
+.projects-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.projects-grid::-webkit-scrollbar-track {
+  background: var(--navy);
+  border-radius: 3px;
+}
+
+.projects-grid::-webkit-scrollbar-thumb {
+  background: var(--green);
+  border-radius: 3px;
+}
