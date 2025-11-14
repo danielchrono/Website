@@ -447,38 +447,6 @@ private generateContact(): string {
     `;
   }
 
-  private renderProjectCard(project: Project, isFeatured: boolean): string {
-    return `
-      <article class="project-card ${isFeatured ? 'project-card-featured' : ''}">
-        <div class="project-header">
-          <div class="project-icon">
-            <i class="fas fa-${isFeatured ? 'star' : 'folder'}" aria-hidden="true"></i>
-          </div>
-          ${isFeatured ? '<div class="project-featured-badge">Destaque</div>' : '<div></div>'}
-          <div class="project-links">
-            ${project.githubUrl ? `
-              <a href="${project.githubUrl}" class="project-link" aria-label="Ver código no GitHub" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-github" aria-hidden="true"></i>
-              </a>
-            ` : ''}
-            ${project.liveUrl ? `
-              <a href="${project.liveUrl}" class="project-link" aria-label="Ver projeto ao vivo" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-              </a>
-            ` : ''}
-          </div>
-        </div>
-        <h3 class="project-title">${project.title}</h3>
-        <p class="project-description">${project.description}</p>
-        <div class="project-technologies">
-          ${project.technologies.map(tech => `
-            <span class="technology-tag">${tech}</span>
-          `).join('')}
-        </div>
-      </article>
-    `;
-  }
-
   private generateDesktopTimeline(): string {
     return TIMELINE.map((item, index) => this.renderTimelineItem(item, index)).join('');
   }
@@ -488,31 +456,33 @@ private generateContact(): string {
     return `
       <article class="timeline-item ${isEven ? 'timeline-item-left' : 'timeline-item-right'}" data-index="${index}">
         <div class="timeline-dot" aria-hidden="true"></div>
-        <div class="timeline-content">
-          <div class="timeline-content-header">
-            ${isEven ? `
-              <i class="fas fa-${item.icon} timeline-content-icon" aria-hidden="true"></i>
-              <div class="timeline-content-text">
-                <time class="timeline-date" datetime="${this.formatDateTime(item.date)}">${item.date}</time>
-                <h3 class="timeline-title">${item.title}</h3>
-                <p class="timeline-subtitle">${item.subtitle}</p>
-              </div>
-            ` : `
-              <div class="timeline-content-text">
-                <time class="timeline-date" datetime="${this.formatDateTime(item.date)}">${item.date}</time>
-                <h3 class="timeline-title">${item.title}</h3>
-                <p class="timeline-subtitle">${item.subtitle}</p>
-              </div>
-              <i class="fas fa-${item.icon} timeline-content-icon" aria-hidden="true"></i>
-            `}
-          </div>
-          <div class="timeline-content-description">
-            <p class="timeline-description">${item.description}</p>
-            ${item.tags ? `
-              <div class="timeline-content-tags">
-                ${item.tags.map(tag => `<span class="timeline-tag">${tag}</span>`).join('')}
-              </div>
-            ` : ''}
+        <div class="card-3d card-3d-timeline">
+          <div class="card-3d-content">
+            <div class="timeline-content-header">
+              ${isEven ? `
+                <i class="fas fa-${item.icon} timeline-content-icon" aria-hidden="true"></i>
+                <div class="timeline-content-text">
+                  <time class="timeline-date" datetime="${this.formatDateTime(item.date)}">${item.date}</time>
+                  <h3 class="timeline-title">${item.title}</h3>
+                  <p class="timeline-subtitle">${item.subtitle}</p>
+                </div>
+              ` : `
+                <div class="timeline-content-text">
+                  <time class="timeline-date" datetime="${this.formatDateTime(item.date)}">${item.date}</time>
+                  <h3 class="timeline-title">${item.title}</h3>
+                  <p class="timeline-subtitle">${item.subtitle}</p>
+                </div>
+                <i class="fas fa-${item.icon} timeline-content-icon" aria-hidden="true"></i>
+              `}
+            </div>
+            <div class="timeline-content-description">
+              <p class="timeline-description">${item.description}</p>
+              ${item.tags ? `
+                <div class="timeline-content-tags">
+                  ${item.tags.map(tag => `<span class="timeline-tag">${tag}</span>`).join('')}
+                </div>
+              ` : ''}
+            </div>
           </div>
         </div>
       </article>
@@ -542,9 +512,44 @@ private generateContact(): string {
     `;
   }
 
-  private generateContactInfo(): string {
-    return CONTACT_INFO.map(contact => `
-      <a href="${contact.href}" class="contact-card" target="_blank" rel="noopener noreferrer" aria-label="${contact.type}: ${contact.value}">
+private renderProjectCard(project: Project, isFeatured: boolean): string {
+  return `
+    <article class="card-3d card-3d-project ${isFeatured ? 'project-card-featured' : ''}">
+      <div class="card-3d-content">
+        <div class="project-header">
+          <div class="project-icon">
+            <i class="fas fa-${isFeatured ? 'star' : 'folder'}" aria-hidden="true"></i>
+          </div>
+          ${isFeatured ? '<div class="project-featured-badge">Destaque</div>' : '<div></div>'}
+          <div class="project-links">
+            ${project.githubUrl ? `
+              <a href="${project.githubUrl}" class="project-link" aria-label="Ver código no GitHub" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github" aria-hidden="true"></i>
+              </a>
+            ` : ''}
+            ${project.liveUrl ? `
+              <a href="${project.liveUrl}" class="project-link" aria-label="Ver projeto ao vivo" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+              </a>
+            ` : ''}
+          </div>
+        </div>
+        <h3 class="project-title">${project.title}</h3>
+        <p class="project-description">${project.description}</p>
+        <div class="project-technologies">
+          ${project.technologies.map(tech => `
+            <span class="technology-tag">${tech}</span>
+          `).join('')}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+private generateContactInfo(): string {
+  return CONTACT_INFO.map(contact => `
+    <a href="${contact.href}" class="card-3d card-3d-contact" target="_blank" rel="noopener noreferrer" aria-label="${contact.type}: ${contact.value}">
+      <div class="card-3d-content">
         <div class="contact-icon">
           <i class="${contact.icon}" aria-hidden="true"></i>
         </div>
@@ -553,13 +558,15 @@ private generateContact(): string {
           <div class="contact-value">${contact.value}</div>
           ${contact.description ? `<div class="contact-description-small">${contact.description}</div>` : ''}
         </div>
-      </a>
-    `).join('');
-  }
+      </div>
+    </a>
+  `).join('');
+}
 
-  private generateSocialLinks(): string {
-    return SOCIAL_LINKS.map(social => `
-      <a href="${social.url}" class="social-card" target="_blank" rel="noopener noreferrer" aria-label="${social.platform}: ${social.username}">
+private generateSocialLinks(): string {
+  return SOCIAL_LINKS.map(social => `
+    <a href="${social.url}" class="card-3d card-3d-contact" target="_blank" rel="noopener noreferrer" aria-label="${social.platform}: ${social.username}">
+      <div class="card-3d-content">
         <div class="social-icon">
           <i class="fab fa-${social.icon}" aria-hidden="true"></i>
         </div>
@@ -567,9 +574,10 @@ private generateContact(): string {
           <div class="social-platform">${social.platform}</div>
           <div class="social-username">${social.username}</div>
         </div>
-      </a>
-    `).join('');
-  }
+      </div>
+    </a>
+  `).join('');
+}
 
   private formatDateTime(dateString: string): string {
     if (dateString.includes('Presente')) {

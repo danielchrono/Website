@@ -1,0 +1,176 @@
+/* ===== SISTEMA DE CARDS 3D ===== */
+.card-3d {
+  position: relative;
+  background: var(--gradient-card);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-sm);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.card-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-radius: var(--border-radius-lg);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.card-3d::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    135deg,
+    var(--green) 0%,
+    transparent 30%,
+    transparent 70%,
+    var(--accent-cyan) 100%
+  );
+  border-radius: calc(var(--border-radius-lg) + 2px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.card-3d:hover {
+  transform: translateY(-8px) rotateX(5deg) rotateY(2deg);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 20px var(--green-glow);
+  border-color: rgba(100, 255, 218, 0.3);
+}
+
+.card-3d:hover::before {
+  opacity: 1;
+}
+
+.card-3d:hover::after {
+  opacity: 0.6;
+}
+
+.card-3d:active {
+  transform: translateY(-4px) rotateX(2deg) rotateY(1deg);
+  transition-duration: 0.1s;
+}
+
+/* Variantes de Cards */
+.card-3d-project {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-3d-contact {
+  min-height: fit-content;
+  display: flex;
+  align-items: center;
+}
+
+.card-3d-skill {
+  padding: var(--space-xl);
+}
+
+.card-3d-timeline {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Efeito de profundidade para conteúdo interno */
+.card-3d-content {
+  position: relative;
+  z-index: 2;
+  transform: translateZ(20px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-3d-contact .card-3d-content {
+  position: relative;
+  z-index: 2;
+  transform: translateZ(20px);
+  height: 100%;
+  width: auto;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+.card-3d-contact:hover .contact-icon,
+.card-3d-contact:hover .social-icon {
+  background: var(--green);
+  color: var(--navy);
+  transform: scale(1.1);
+}
+
+/* Estados de foco para acessibilidade */
+.card-3d:focus-within {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* Animações de entrada */
+@keyframes cardAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card-3d-appear {
+  animation: cardAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .card-3d:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      0 15px 30px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .card-3d::after {
+    display: none; /* Desativa efeito complexo em mobile */
+  }
+}
+
+/* Modo de performance - reduz movimento */
+@media (prefers-reduced-motion: reduce) {
+  .card-3d {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .card-3d:hover {
+    transform: translateY(-2px);
+  }
+}

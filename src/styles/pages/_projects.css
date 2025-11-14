@@ -10,8 +10,8 @@
 }
 
 .projects-grid {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  align-items:normal;
   gap: 1rem;
   overflow-x: auto;
   padding: 1rem 0;

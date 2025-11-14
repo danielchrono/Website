@@ -1,5 +1,5 @@
 /* ===== MINI BIO - PADRONIZADO ===== */
-#about {
+/* #about {
   background: var(--navy);
   padding: var(--section-padding);
   position: static;
@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
 #about::before {
   content: '';

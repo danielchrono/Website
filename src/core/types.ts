@@ -12,6 +12,7 @@ export interface Project {
   githubUrl?: string;
   liveUrl?: string;
   featured?: boolean;
+  status?: 'completed' | 'development' | 'planning';
 }
 
 export interface TimelineItem {
@@ -22,6 +23,7 @@ export interface TimelineItem {
   type: 'work' | 'education' | 'certification';
   icon: string;
   tags?: string[];
+  achievements?: string[];
 }
 
 export interface ContactInfo {
@@ -56,7 +58,17 @@ export interface AppState {
   mapOpen: boolean;
   typewriterCompleted: boolean;
   isInitialized: boolean;
+  scrollDirection: 'up' | 'down';
 }
+
+export type AppEvent = 
+  | 'themeToggle'
+  | 'sectionNavigate' 
+  | 'sectionChange'
+  | 'mobileMenuToggle'
+  | 'mapToggle'
+  | 'preloaderHidden'
+  | 'typewriterComplete';
 
 export interface ComponentConfig {
   name: string;
@@ -82,28 +94,23 @@ export interface SectionChangeEvent extends CustomEvent {
   };
 }
 
-export interface ThemeToggleEvent extends CustomEvent {}
-export interface MobileMenuCloseEvent extends CustomEvent {}
-export interface EscapePressedEvent extends CustomEvent {}
-export interface OpenMapEvent extends CustomEvent {}
-export interface CloseMapEvent extends CustomEvent {}
-export interface ScrollToSectionEvent extends CustomEvent {
-  detail: {
-    sectionId: string;
-  };
+export interface CustomEventMap {
+  themeToggle: CustomEvent;
+  sectionNavigate: CustomEvent<{ sectionId: string }>;
+  sectionChange: CustomEvent<{ section: string }>;
+  mobileMenuToggle: CustomEvent<{ open: boolean }>;
+  mapToggle: CustomEvent<{ open: boolean }>;
+  preloaderHidden: CustomEvent;
+  typewriterComplete: CustomEvent;
 }
 
 // Extender a interface Document para incluir nossos eventos customizados
 declare global {
   interface Document {
-    addEventListener(type: 'sectionNavigate', listener: (event: SectionNavigateEvent) => void): void;
-    addEventListener(type: 'smoothScrollTo', listener: (event: SmoothScrollEvent) => void): void;
-    addEventListener(type: 'sectionChange', listener: (event: SectionChangeEvent) => void): void;
-    addEventListener(type: 'themeToggle', listener: (event: ThemeToggleEvent) => void): void;
-    addEventListener(type: 'mobileMenuClose', listener: (event: MobileMenuCloseEvent) => void): void;
-    addEventListener(type: 'escapePressed', listener: (event: EscapePressedEvent) => void): void;
-    addEventListener(type: 'openMap', listener: (event: OpenMapEvent) => void): void;
-    addEventListener(type: 'closeMap', listener: (event: CloseMapEvent) => void): void;
-    addEventListener(type: 'scrollToSection', listener: (event: ScrollToSectionEvent) => void): void;
+    addEventListener<K extends keyof CustomEventMap>(
+      type: K,
+      listener: (this: Document, ev: CustomEventMap[K]) => void
+    ): void;
+    dispatchEvent<K extends keyof CustomEventMap>(event: CustomEventMap[K]): void;
   }
 }

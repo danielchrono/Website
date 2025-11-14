@@ -157,14 +157,14 @@ export const CONTACT_INFO: ContactInfo[] = [
     value: 'danielchrono@gmail.com',
     href: 'mailto:danielchrono@gmail.com',
     icon: 'fas fa-envelope',
-    description: 'Respondo em até 24 horas'
+    // description: 'Respondo em até 24 horas'
   },
   {
     type: 'WhatsApp',
     value: '(31) 99292-8444',
     href: 'https://wa.me/5531992928444',
     icon: 'fab fa-whatsapp',
-    description: 'Disponível para conversas'
+    // description: 'Disponível para conversas'
   }
 ];
 

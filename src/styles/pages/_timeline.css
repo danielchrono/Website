@@ -100,14 +100,14 @@
     background: var(--light-navy);
     border-radius: 50%;
     transform: translateY(-50%);
-    border: 3px solid var(--green);
+    border: 2px solid var(--green);
     box-shadow: 0 0 0 3px var(--light-navy);
     transition: var(--transition-bounce);
     z-index: 2;
   }
   
   .timeline-item-left .timeline-dot {
-    right: -45.5px; /* Posição precisa relativa ao card */
+    right: -45px; /* Posição precisa relativa ao card */
   }
   
   .timeline-item-right .timeline-dot {
