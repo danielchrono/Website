@@ -1,4 +1,4 @@
-/* ===== CONTACT PAGE OTIMIZADA ===== */
+/* ===== CONTACT PAGE ===== */
 #contact {
   padding: var(--section-padding);
   background: var(--navy);
@@ -48,7 +48,7 @@
   font-weight: 600;
 }
 
-/* ===== CONTACT GRID RESPONSIVA ===== */
+/* ===== CONTACT GRID ===== */
 .contact-grid {
   display: flex;
   flex-wrap: nowrap;
@@ -67,7 +67,7 @@
   margin: 0 auto;
 }
 
-/* ===== CARDS OTIMIZADOS ===== */
+/* ===== CARDS ===== */
 .contact-card,
 .social-card {
   background: var(--gradient-card);

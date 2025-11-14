@@ -4,13 +4,13 @@ Site com informações profissionais em Tailwind CSS e TypeScript
 Estrutura TypeScript
 src/
 ├── core/
-│   ├── app.ts (antigo portfolio-app.ts)
+│   ├── app.ts
 │   ├── config.ts
 │   └── types.ts
 ├── components/
 │   ├── base/
 │   │   ├── component.ts
-│   │   └── dom-manager.ts (atualizado)
+│   │   └── dom-manager.ts
 │   ├── layout/
 │   │   ├── header.ts
 │   │   ├── navigation.ts
@@ -24,16 +24,19 @@ src/
 │       ├── timeline.ts
 │       └── contact.ts
 ├── utils/
-│   ├── animations.ts
-│   ├── events.ts
+│   ├── animation-manager.ts
+│   ├── event-manager.ts
+│   ├── helpers.ts
 │   ├── performance.ts
-│   └── helpers.ts
+│   ├── scroll-manager.ts
+│   └── theme-manager.ts
 ├── styles/ (estrutura CSS modular)
 ├── main.ts
 ├── data.ts
 └── vite-env.d.ts
 
 Estrutura CSS
+/* estrutura proposta */
 src/
 ├── styles/
 │   ├── base/
@@ -47,7 +50,6 @@ src/
 │   │   ├── _map.css
 │   │   ├── _navigation.css
 │   │   ├── _preloader.css
-│   │   ├── _timeline.css
 │   │   └── _forms.css
 │   ├── layouts/
 │   │   ├── _header.css

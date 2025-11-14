@@ -2,7 +2,7 @@
 #about {
   background: var(--navy);
   padding: var(--section-padding);
-  position: relative;
+  position: static;
   height: 540px;
   display: flex;
   align-items: center;
@@ -144,7 +144,10 @@
   width: 150px;
   height: 150px;
   border-radius: var(--border-radius);
-  position: absolute;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   border: 2px solid var(--green);
@@ -155,7 +158,8 @@
   .image-container {
     width: 250px;
     height: 250px;
-    margin-top: 0;
+    margin-bottom: 50%;
+    top: 0;
   }
 }
 
