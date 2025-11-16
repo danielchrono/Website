@@ -71,8 +71,7 @@ export class PortfolioApp {
     // Configurar managers
     this.animationManager.setupIntersectionObserver();
     this.animationManager.setupActiveSectionObserver();
-    this.animationManager.setupStableSkillAnimations();
-    
+
     this.scrollManager.setupScrollEvents();
     this.scrollManager.setupScrollDirection();
     

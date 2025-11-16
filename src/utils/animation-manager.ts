@@ -7,6 +7,7 @@ export class AnimationManager {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           this.handleElementInViewport(entry.target);
+          this.handleElement(entry.target);
         }
       });
     }, {
@@ -53,7 +54,7 @@ export class AnimationManager {
     this.observers.push(sectionObserver);
   }
 
-  setupStableSkillAnimations(): void {
+  setupSkillsAnimation(): void {
     const skillBars = document.querySelectorAll('.skill-bar');
     
     const observer = new IntersectionObserver((entries) => {
@@ -65,11 +66,10 @@ export class AnimationManager {
           if (percentage) {
             bar.setAttribute('data-animated', 'true');
             
-            // CORREÇÃO: Sem delay e sem overshoot
-            requestAnimationFrame(() => {
-              bar.style.transition = 'width 1s ease-out'; // Transição mais suave
+            setTimeout(() => {
+              bar.style.transition = 'width 1.2s ease-in-out';
               bar.style.width = `${percentage}%`;
-            });
+            }, 150);
           }
         }
       });
@@ -109,7 +109,7 @@ export class AnimationManager {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      const easeOutBack = 1 + 2.70158 * Math.pow(progress - 1, 3) + 1.70158 * Math.pow(progress - 1, 2);
+      const easeOutBack = 1 + 2 * Math.pow(progress - 1, 3) * Math.pow(progress - 1, 2);
       const current = Math.floor(start + (end - start) * easeOutBack);
       
       element.textContent = current.toString();
@@ -120,6 +120,31 @@ export class AnimationManager {
     };
     
     this.animationFrameId = requestAnimationFrame(step);
+  }
+
+  private handleElement(element: Element): void {
+    if (element.classList.contains('stat-item')) {
+      // Já tratado pelo observer específico
+      return;
+    } else if (element.classList.contains('counter')) {
+      this.animateCounter(element as HTMLElement);
+    } else {
+      element.classList.add('animate-fade-in-up');
+    }
+  }  
+
+  setupStatsAnimation(): void {
+    const statNumbers = document.querySelectorAll('.counter');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.getAttribute('data-animated')) {
+          this.animateCounter(entry.target as HTMLElement);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statNumbers.forEach(stat => observer.observe(stat));
   }
 
   smoothScrollTo(element: HTMLElement, offset: number = 70): void {
@@ -141,3 +166,4 @@ export class AnimationManager {
     }
   }
 }
+export const animationManager = new AnimationManager

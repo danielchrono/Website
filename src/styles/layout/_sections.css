@@ -2,7 +2,7 @@
 .section::after {
   content: '';
   position: absolute;
-  bottom: 1px;
+  bottom: 0;
   left: 0;
   right: 0;
   height: 1px;
@@ -10,7 +10,7 @@
 }
 
 .section {
-  min-height: 88dvh;
+  min-height: calc(100dvh - var(--header-height) - 1px);
   display: flex;  
   position: relative;  
   padding: var(--section-padding);

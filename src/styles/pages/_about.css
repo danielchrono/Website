@@ -54,7 +54,8 @@
   position: relative;
   overflow: hidden;
   gap: var(--space-sm);
-  padding-bottom: 0;  
+  padding: 1.5rem;
+  
 }
 
 /* Item de Estatística (stat-item) - Regras Consolidadas */
@@ -90,18 +91,36 @@
 
 .stat-item:hover {
   transform: translateY(-2px);
-  border-color: var(--green);
-  box-shadow: var(--shadow-md);
+  /* border-color: var(--green); */
+  /* box-shadow: var(--shadow-md); */
+  box-shadow: 0 0 20px var(--green-glow);
 }
 
 /* Elementos do Item de Estatística */
 .stat-icon {
-  color: var(--green);
-  font-size: 1.3rem;
   margin-bottom: var(--space-sm);
   position: relative;
   z-index: 2;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: grid;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  transition: none;
+  background-image: radial-gradient(circle at center, var(--green) 0%, var(--navy) 100%); 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);    
 }
+
+.stat-item:hover .stat-icon {
+  color: var(--green);
+  background-image: radial-gradient(circle at center, var(--green-tint) 0%, var(--green-glow) 50%, var(--green) 100%); 
+  box-shadow: 0 0 20px var(--green-glow);
+} 
 
 .stat-number {
   display: block;
@@ -134,8 +153,8 @@
 .image-container {
   top: 0;
   left: 0;
-  max-width: 28cap;
-  max-height: 28cap;
+  width: 35cqw;
+  height: 65cqh;
   border-radius: var(--border-radius);
   position: relative;
   display: flex;
@@ -205,32 +224,30 @@
 
 /* --- Mobile Landscape/Pequenos Tablets (> 480px) --- */
 @media (min-width: 480px) {
+  /* .about-grid {
+    grid-template-columns: repeat(4, 1fr);
+  } */
 
-  .about-stats {
-    /* grid-auto-flow: column;
-    grid-template-columns: repeat(4, 1fr); */
+  /* .about-stats {
     text-align: center;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
     position: relative;
     overflow: hidden;
-  }
+  } */
 }
 
 /* --- Tablets (> 768px) --- */
 @media (min-width: 768px) {
   /* .about-grid {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
   } */
 
-  .about-stats {
+  /* .about-stats {
     gap: var(--space-md);
-  }
+  } */
 
   .image-container {
-    width: 28rcap;
-    height: 28rcap;
+    max-width: 60cqw;
+    max-height: 35cqh;
   }
 }
 
@@ -240,16 +257,16 @@
     justify-content: center;
   }
 
-  #about {
-    min-height: 697px;
-  }
+  /* .about-stats {
+    gap: var(--space-md);
+  }   */
 }
 
 /* --- Desktops (> 1024px) --- */
 @media (min-width: 1024px) {
   .image-container {
-    margin-top: -4dvh;
-    width: 100cqw;
-    height: 100cqh
+    margin-top: -4cqw;
+    max-width: 35cqw;
+    max-height: 65cqh;
   }
 }

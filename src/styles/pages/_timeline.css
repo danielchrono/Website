@@ -11,6 +11,17 @@
   display: none;
 }
 
+.timeline-tag {
+  background: var(--green-tint);
+  color: var(--green);
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 @media (min-width: 768px) {
   .timeline-desktop {
     display: block;
@@ -50,11 +61,12 @@
   .timeline-item {
     position: relative;
     display: flex;
+    flex: 1 1 auto;
     cursor: pointer;
     transition: var(--transition-base);
     flex-direction: column;
     padding: 0;
-    min-height: 140px; /* Altura mínima reduzida */
+    min-height: 116px; /* Altura mínima reduzida */
   }
 
   /* ITENS DA ESQUERDA (grid column 1) */
@@ -101,7 +113,7 @@
   }
   
   .timeline-item-left .timeline-dot {
-    right: -45.5px; /* Posição precisa relativa ao card */
+    right: -45px; /* Posição precisa relativa ao card */
   }
   
   .timeline-item-right .timeline-dot {
@@ -173,14 +185,14 @@
   }
 
   .timeline-item-left .timeline-content-icon {
-    order: 2;
+    order: 1;
     margin-left: var(--space-lg);
     margin-right: 0;
     flex-shrink: 0;
   }
 
   .timeline-item-left .timeline-content-text {
-    order: 1;
+    order: 2;
     text-align: right;
     flex: 1;
   }
@@ -192,21 +204,21 @@
   }
 
   .timeline-item-right .timeline-content-icon {
-    order: 1;
+    order: 2;
     margin-right: var(--space-lg);
     margin-left: 0;
     flex-shrink: 0;
   }
 
   .timeline-item-right .timeline-content-text {
-    order: 2;
+    order: 1;
     text-align: left;
     flex: 1;
   }
 
   .timeline-content-icon {
     color: var(--green);
-    font-size: 1.4rem;
+    font-size: 2rem;
     margin-top: var(--space-xs);
     flex-shrink: 0;
   }
@@ -251,17 +263,6 @@
   .timeline-item-left .timeline-content-tags {
     justify-content: flex-end;
   }
-
-  .timeline-tag {
-    background: var(--green-tint);
-    color: var(--green);
-    padding: 4px 8px;
-    border-radius: 10px;
-    font-size: 0.65rem;
-    font-family: var(--font-mono);
-    font-weight: 600;
-    white-space: nowrap;
-  }
 }
 
 /* ESPAÇAMENTO ENTRE ITENS NO GRID */
@@ -281,47 +282,47 @@
 }
 
 /* VERSÃO ALTERNATIVA - SE PRECISAR DE MAIS PRECISÃO */
-@media (min-width: 768px) {
-  .timeline-items-precise {
+/* @media (min-width: 768px) {
+  .timeline-items {
     display: grid;
-    grid-template-columns: 1fr 2px 1fr; /* Linha central de 2px */
+    grid-template-columns: 1fr 2px 1fr; // Linha central de 2px
     grid-auto-rows: minmax(140px, auto);
     align-items: center;
   }
   
-  .timeline-item-precise {
+  .timeline-item {
     position: relative;
     min-height: 140px;
     display: flex;
     align-items: center;
   }
   
-  .timeline-item-left-precise {
+  .timeline-item-left {
     grid-column: 1;
     justify-self: end;
     padding-right: 40px;
   }
   
-  .timeline-item-right-precise {
+  .timeline-item-right {
     grid-column: 3;
     justify-self: start;
     padding-left: 40px;
   }
   
-  .timeline-dot-precise {
+  .timeline-dot {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
   }
   
-  .timeline-item-left-precise .timeline-dot-precise {
-    right: -21px; /* Metade do width do dot + metade da linha */
+  .timeline-item-left .timeline-dot {
+    right: -46px; // Metade do width do dot + metade da linha
   }
   
-  .timeline-item-right-precise .timeline-dot-precise {
-    left: -21px; /* Metade do width do dot + metade da linha */
+  .timeline-item-right .timeline-dot {
+    left: -47px; // Metade do width do dot + metade da linha
   }
-}
+} */
 
 /* Timeline Mobile (mantido igual) */
 .timeline-mobile {
@@ -387,14 +388,14 @@
 .timeline-date {
   color: var(--green);
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   position: relative;
   z-index: 2;
 }
 
 .timeline-title {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   margin-bottom: var(--space-xs);
   color: var(--lightest-slate);
   font-weight: 700;
@@ -404,7 +405,7 @@
 
 .timeline-subtitle {
   color: var(--green);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   margin-bottom: var(--space-sm);
   font-family: var(--font-mono);
   font-weight: 600;
@@ -416,7 +417,7 @@
   color: var(--light-slate);
   line-height: 1.6;
   margin-bottom: var(--space-md);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   position: relative;
   z-index: 2;
 }

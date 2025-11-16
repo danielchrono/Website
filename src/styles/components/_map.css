@@ -31,19 +31,18 @@
 
 .map-container {
   width: 100%;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: linear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-  transform-origin: bottom center; /* Mudar a origem da transformação */
-  transform: scaleY(0) translateY(20px); /* Escala vertical */
+  transform-origin: left top 1px; /* Mudar a origem da transformação */
 }
 
 .map-container.active {
   max-height: 500px;
   opacity: 1;
-  transform: scaleY(1) translateY(0); /* Expandir verticalmente */
-  margin: 2rem 0;
+  transform: scaleY(1) translateY(20px); /* Expandir verticalmente */
+  padding: 1rem 0;
 }
 
 .map-iframe {

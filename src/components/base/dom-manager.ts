@@ -456,14 +456,14 @@ private generateContact(): string {
           </div>
           ${isFeatured ? '<div class="project-featured-badge">Destaque</div>' : '<div></div>'}
           <div class="project-links">
-            ${project.githubUrl ? `
-              <a href="${project.githubUrl}" class="project-link" aria-label="Ver código no GitHub" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-github" aria-hidden="true"></i>
-              </a>
-            ` : ''}
             ${project.liveUrl ? `
               <a href="${project.liveUrl}" class="project-link" aria-label="Ver projeto ao vivo" target="_blank" rel="noopener noreferrer">
                 <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+              </a>
+            ` : ''}          
+            ${project.githubUrl ? `
+              <a href="${project.githubUrl}" class="project-link" aria-label="Ver código no GitHub" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github" aria-hidden="true"></i>
               </a>
             ` : ''}
           </div>

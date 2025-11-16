@@ -1,4 +1,5 @@
 /* ===== BOTÕES ===== */
+/* Botões Hero */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -9,7 +10,7 @@
   font-family: var(--font-mono);
   font-size: 0.85rem;
   text-decoration: none;
-  transition: var(--transition-bounce);
+  transition: var(--transition-smooth);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -33,34 +34,39 @@
 }
 
 .btn-primary {
-  background: var(--green);
+  /* background-color: var(--green); */
   border-color: var(--green);
   color: var(--navy);
+  background-image: radial-gradient(circle at center, var(--green) 0%, var(--green-glow) 100%); 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);        
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 20px var(--green-glow);
   background: transparent;
   color: var(--green);
+  background-image: radial-gradient(circle at center, transparent 0%, transparent 100%); 
 }
 
 .btn-secondary {
   background: transparent;
   border-color: var(--green);
   color: var(--green);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);        
 }
 
 .btn-secondary:hover {
-  background: var(--green);
+  /* background: var(--green); */
   color: var(--navy);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 20px var(--green-glow);
+  background-image: radial-gradient(circle at center, var(--green) 0%, var(--green-glow) 100%); 
 }
 
 .btn i {
   font-size: 0.85rem;
-  transition: var(--transition-base);
+  transition: all 0.3s ease;
 }
 
 .btn:hover i {
