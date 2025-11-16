@@ -10,12 +10,12 @@
 }
 
 .section {
-  min-height: 88.8cqh;
+  min-height: 88dvh;
   display: flex;  
   position: relative;  
   padding: var(--section-padding);
-  justify-content: center;
-  align-items: center;  
+  /* justify-content: center;
+  align-items: center;   */
 }
 
 .section-content {

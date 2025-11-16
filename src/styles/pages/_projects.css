@@ -153,8 +153,9 @@
 .project-technologies {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  position: relative;  
   gap: 0.5rem;
-  position: relative;
   z-index: 2;
 }
 
