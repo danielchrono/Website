@@ -1,12 +1,6 @@
 /* ===== PROJECTS PAGE ===== */
 #projects {
-  padding: var(--section-padding);  
   background: var(--navy);
-  position: relative;
-  min-height: 540px;
-  justify-content: center;
-  display: flex;
-  align-items: center;
 }
 
 .projects-grid {

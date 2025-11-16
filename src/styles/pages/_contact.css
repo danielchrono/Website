@@ -1,10 +1,6 @@
 /* ===== CONTACT PAGE ===== */
 #contact {
-  padding: var(--section-padding);
   background: var(--navy);
-  position: relative;
-  min-height: 540px; 
-  justify-content: center; 
 }
 
 .contact-content {
@@ -20,8 +16,6 @@
   color: var(--light-slate);
   line-height: 1.6;
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .contact-section {
@@ -29,7 +23,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-xl);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-3xl);
   width: 100%;
 }
 
@@ -44,7 +38,7 @@
 .contact-subtitle {
   font-size: 1.2rem;
   color: var(--lightest-slate);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-3xs);
   font-weight: 600;
 }
 
@@ -68,7 +62,7 @@
 }
 
 /* ===== CARDS ===== */
-.contact-card,
+/* .contact-card,
 .social-card {
   background: var(--gradient-card);
   border-radius: var(--border-radius-lg);
@@ -178,7 +172,7 @@
   overflow: visible;
   text-overflow: unset;
   line-height: 1.2;
-}
+} */
 
 /* ===== RESPONSIVIDADE CONTACT ===== */
 @media (max-width: 767px) {

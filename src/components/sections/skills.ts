@@ -26,7 +26,7 @@ export class Skills extends Component {
             bar.setAttribute('data-animated', 'true');
             
             setTimeout(() => {
-              bar.style.transition = 'width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+              bar.style.transition = 'width 1.2s ease-in-out';
               bar.style.width = `${percentage}%`;
             }, 150);
           }

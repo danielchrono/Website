@@ -1,4 +1,23 @@
 /* ===== SECTIONS ===== */
+.section::after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+
+.section {
+  min-height: 88.8cqh;
+  display: flex;  
+  position: relative;  
+  padding: var(--section-padding);
+  justify-content: center;
+  align-items: center;  
+}
+
 .section-content {
   width: 100%;
   position: relative;

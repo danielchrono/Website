@@ -66,7 +66,7 @@ export class DOMManager {
         ${this.generateFooter()}
       </footer>
 
-    <!-- Mobile Menu (FORA DO HEADER) -->
+    <!-- Mobile Menu -->
     ${this.generateMobileMenu()}
     `;
   }
@@ -124,7 +124,7 @@ export class DOMManager {
 
   private generateHero(): string {
     return `
-      <div class="container">
+      <div class="container hero-container">
         <div class="section-content">
           <div class="hero-content">
             <p class="hero-greeting" data-typewriter data-text="Olá, meu nome é"></p>
@@ -147,7 +147,7 @@ export class DOMManager {
 
   private generateAbout(): string {
     return `
-      <div class="container">
+      <div class="container about-container">
         <div class="section-content">
           <h2 class="section-title" id="about-title" data-number="01.">Mini Bio</h2>
           
@@ -192,7 +192,7 @@ export class DOMManager {
 
   private generateSkills(): string {
     return `
-      <div class="container">
+      <div class="container skills-container">
         <div class="section-content">
           <h2 class="section-title" id="skills-title" data-number="02.">Habilidades</h2>
           
@@ -214,7 +214,7 @@ export class DOMManager {
 
   private generateProjects(): string {
     return `
-      <div class="container">
+      <div class="container projects-container">
         <div class="section-content">
           <h2 class="section-title" id="projects-title" data-number="03.">Projetos</h2>
           
@@ -228,7 +228,7 @@ export class DOMManager {
 
   private generateTimeline(): string {
     return `
-      <div class="container">
+      <div class="container timeline-container">
         <div class="section-content">
           <h2 class="section-title" id="timeline-title" data-number="04.">Trajetória</h2>
           
@@ -251,7 +251,7 @@ export class DOMManager {
 
 private generateContact(): string {
   return `
-    <div class="container">
+    <div class="container contact-container">
       <div class="section-content">
         <div class="contact-content">
           <h2 class="section-title" id="contact-title" data-number="05.">Contato</h2>
@@ -304,7 +304,7 @@ private generateContact(): string {
 
   private generateFooter(): string {
     return `
-      <div class="container">
+      <div class="container footer-container">
         <div class="footer-content">
           <p class="footer-text">&copy; 2025 Daniel Lopes. Todos os direitos reservados.</p>
         </div>

@@ -1,6 +1,5 @@
 /* ===== MAP SECTION ===== */
 .map-section {
-  margin-top: var(--space-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,7 +19,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  margin: var(--space-md) 0;
   font-weight: 600;
 }
 
@@ -39,7 +37,6 @@
   opacity: 0;
   transform-origin: bottom center; /* Mudar a origem da transformação */
   transform: scaleY(0) translateY(20px); /* Escala vertical */
-  margin: 1rem 0;
 }
 
 .map-container.active {

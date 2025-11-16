@@ -9,7 +9,7 @@
   --lightest-slate: #ccd6f6;
   --green: #64ffda;
   --green-tint: rgba(100, 255, 218, 0.1);
-  --green-glow: rgba(100, 255, 218, 0.4);
+  --green-glow: rgba(100, 255, 218, 0.3);
   
   /* Cores Secundárias */
   --accent-purple: #7c3aed;
@@ -92,7 +92,7 @@
   --lightest-slate: #ccd6f6;
   --green: #64ffda;
   --green-tint: rgba(100, 255, 218, 0.1);
-  --green-glow: rgba(100, 255, 218, 0.4);
+  --green-glow: rgba(100, 255, 218, 0.3);
   
   --gradient-primary: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
   --gradient-hero: linear-gradient(135deg, var(--navy) 0%, #0f2746 50%, var(--light-navy) 100%);

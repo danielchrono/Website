@@ -1,12 +1,7 @@
 /* ===== SKILLS SECTION ===== */
 #skills { 
-  padding: var(--section-padding);  
   background: var(--light-navy);
-  position: static;
-  min-height: 540px;
-  display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .skills-grid {

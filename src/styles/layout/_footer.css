@@ -8,7 +8,7 @@
   min-height: auto;
 }
 
-.footer::before {
+/* .footer::before {
   content: '';
   position: absolute;
   top: 0;
@@ -16,7 +16,7 @@
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--green), transparent);
-}
+} */
 
 .footer-content {
   display: flex;

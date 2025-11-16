@@ -1,15 +1,12 @@
-/* ===== MINI BIO - PADRONIZADO ===== */
+/* ===== MINI BIO - PADRONIZADO E OTIMIZADO ===== */
+
+/* --- Seção Principal --- */
 #about {
   background: var(--navy);
-  padding: var(--section-padding);
-  position: static;
-  height: 540px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-#about::before {
+/* Comentário mantido para referência do seletor #about::before */
+/* #about::before {
   content: '';
   position: absolute;
   top: 0;
@@ -17,21 +14,17 @@
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--green), transparent);
-}
+} */
 
+/* --- Layout da Grid (about-grid) --- */
 .about-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: var(--space-3xl);
 }
 
-@media (min-width: 768px) {
-  .about-grid {
-    grid-template-columns: 2fr 1fr;
-    gap: var(--space-3xl);
-  }
-}
-
+/* --- Conteúdo da Bio (about-content) --- */
 .about-content {
   display: flex;
   flex-direction: column;
@@ -52,25 +45,23 @@
   margin-bottom: 0;
 }
 
+/* --- Estatísticas (about-stats) --- */
 .about-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: relative;
+  overflow: hidden;
   gap: var(--space-sm);
+  padding-bottom: 0;  
 }
 
-@media (min-width: 480px) {
-  .about-stats {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  .about-stats {
-    gap: var(--space-md);
-  }
-}
-
+/* Item de Estatística (stat-item) - Regras Consolidadas */
 .stat-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   text-align: center;
   padding: var(--space-md);
   background: var(--gradient-card);
@@ -79,6 +70,7 @@
   transition: var(--transition-base);
   position: relative;
   overflow: hidden;
+  max-height: fit-content;
 }
 
 .stat-item::before {
@@ -102,6 +94,7 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Elementos do Item de Estatística */
 .stat-icon {
   color: var(--green);
   font-size: 1.3rem;
@@ -130,7 +123,7 @@
   font-weight: 500;
 }
 
-/* IMAGE - PADRONIZADA ENTRE DISPLAYS */
+/* --- Imagem (about-image) --- */
 .about-image {
   position: relative;
   display: flex;
@@ -141,8 +134,8 @@
 .image-container {
   top: 0;
   left: 0;
-  width: 150px;
-  height: 150px;
+  max-width: 28cap;
+  max-height: 28cap;
   border-radius: var(--border-radius);
   position: relative;
   display: flex;
@@ -152,22 +145,6 @@
   box-shadow: var(--shadow-lg);
   border: 2px solid var(--green);
   transition: var(--transition-smooth);
-}
-
-@media (min-width: 768px) {
-  .image-container {
-    width: 250px;
-    height: 250px;
-    margin-bottom: 50%;
-    top: 0;
-  }
-}
-
-@media (min-width: 1024px) {
-  .image-container {
-    width: 300px;
-    height: 300px;
-  }
 }
 
 .image-container::before {
@@ -222,4 +199,57 @@
 
 .image-placeholder i {
   font-size: 2rem;
+}
+
+/* ================== MEDIA QUERIES ================== */
+
+/* --- Mobile Landscape/Pequenos Tablets (> 480px) --- */
+@media (min-width: 480px) {
+
+  .about-stats {
+    /* grid-auto-flow: column;
+    grid-template-columns: repeat(4, 1fr); */
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+/* --- Tablets (> 768px) --- */
+@media (min-width: 768px) {
+  /* .about-grid {
+    grid-template-columns: 2fr 1fr;
+  } */
+
+  .about-stats {
+    gap: var(--space-md);
+  }
+
+  .image-container {
+    width: 28rcap;
+    height: 28rcap;
+  }
+}
+
+@media (max-width: 767px) {
+  .about-grid {
+    flex-wrap: wrap;    
+    justify-content: center;
+  }
+
+  #about {
+    min-height: 697px;
+  }
+}
+
+/* --- Desktops (> 1024px) --- */
+@media (min-width: 1024px) {
+  .image-container {
+    margin-top: -4dvh;
+    width: 100cqw;
+    height: 100cqh
+  }
 }

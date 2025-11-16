@@ -1,12 +1,6 @@
 /* ===== TIMELINE SECTION ===== */
 #timeline {
   background: var(--light-navy);
-  padding: var(--section-padding);
-  position: relative;
-  min-height: 540px;
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-  justify-content: center;
 }
 
 #timeline-title {
