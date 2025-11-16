@@ -14,8 +14,8 @@
   display: flex;  
   position: relative;  
   padding: var(--section-padding);
-  /* justify-content: center;
-  align-items: center;   */
+  justify-content: center;
+  align-items: center;  
 }
 
 .section-content {
